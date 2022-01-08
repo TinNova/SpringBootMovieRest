@@ -1,16 +1,15 @@
 package com.tinnovakovic.springboot.fluttermovierest.controller
 
-import com.tinnovakovic.springboot.fluttermovierest.model.Movie
-import com.tinnovakovic.springboot.fluttermovierest.service.MovieService
-import org.springframework.beans.factory.annotation.Autowired
+import com.tinnovakovic.springboot.fluttermovierest.model.User
+import com.tinnovakovic.springboot.fluttermovierest.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.lang.IllegalArgumentException
 
 @RestController
-@RequestMapping("/api/movies")
-class MovieController(private val service: MovieService) {
+@RequestMapping("/api/users")
+class UserController(private val service: UserService) {
 
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNotFound(e: NoSuchElementException): ResponseEntity<String> =
@@ -21,19 +20,20 @@ class MovieController(private val service: MovieService) {
         ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
 
     @GetMapping("/")
-    fun getMovies(): List<Movie> = service.getMovies()
+    fun getUsers(): List<User> = service.getUsers()
 
-    @GetMapping("/{id}")
-    fun getMovie(@PathVariable id: Int): Movie = service.getMovie(id)
+    // This pathVariable needs to be replaced with a username password authentication
+    @GetMapping("/{email}")
+    fun getUser(@PathVariable email: String): User = service.getUser(email)
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addMovie(@RequestBody movie: Movie): Movie = service.createMovie(movie)
+    fun addUser(@RequestBody user: User): User = service.createUser(user)
 
     @PatchMapping("/")
-    fun updateMovie(@RequestBody movie: Movie): Movie = service.updateMovie(movie)
+    fun updateUser(@RequestBody user: User): User = service.updateUser(user)
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteMovie(@PathVariable id: Int): Unit = service.deleteMovie(id)
+    fun deleteUser(@PathVariable email: String): Unit = service.deleteUser(email)
 }

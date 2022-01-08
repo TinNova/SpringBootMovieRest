@@ -2,6 +2,8 @@ package com.tinnovakovic.springboot.fluttermovierest.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
+import com.tinnovakovic.springboot.fluttermovierest.model.User
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -15,59 +17,59 @@ import org.springframework.test.web.servlet.*
 // Integration Test
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class MovieControllerTest @Autowired constructor(
+internal class UserControllerTest @Autowired constructor(
     val mockMvc: MockMvc,
     val objectMapper: ObjectMapper
 ) {
 
     @Nested
-    @DisplayName("GET api/movies")
+    @DisplayName("GET api/users")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    inner class GetBanks {
+    inner class GetUsers {
 
         @Test
-        fun `should return all movies`() {
+        fun `should return all users`() {
             //when //then
-            mockMvc.get("/api/movies/")
+            mockMvc.get("/api/users/")
                 .andDo { print() }
                 .andExpect {
                     status { isOk() }
                     content { contentType(MediaType.APPLICATION_JSON) }
                     jsonPath("$[0].id") { value(1) }
-                    jsonPath("$[0].movieId") { value("1001") }
-                    jsonPath("$[0].posterPath") { value("posterPath") }
+                    jsonPath("$[0].username") { value("tin") }
+                    jsonPath("$[0].email") { value("tin@gmail.com") }
                 }
         }
     }
 
     @Nested
-    @DisplayName("GET /api/movies/{id}")
+    @DisplayName("GET /api/users/{email}")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    inner class GetBank {
+    inner class GetUser {
         @Test
-        fun `should return movie with given id number`() {
+        fun `should return user with given email`() {
             //given
-            val id = 1
+            val email = "tin@gmail.com"
 
             //when //then
-            mockMvc.get("/api/movies/${id}")
+            mockMvc.get("/api/users/${email}")
                 .andDo { print() }
                 .andExpect {
                     status { isOk() }
                     content { contentType(MediaType.APPLICATION_JSON) }
                     jsonPath("$.id") { value("1") }
-                    jsonPath("$.movieId") { value("1001") }
-                    jsonPath("$.posterPath") { value("posterPath") }
+                    jsonPath("$.username") { value("tin") }
+                    jsonPath("$.email") { value("tin@gmail.com") }
                 }
         }
 
         @Test
-        fun `should return NOT FOUND when given id number does not exist`() {
+        fun `should return NOT FOUND when given email does not exist`() {
             //given
-            val id = -5
+            val email = "fake@gmail.com"
 
             //when //then
-            mockMvc.get("/api/movies/${id}")
+            mockMvc.get("/api/users/${email}")
                 .andDo { print() }
                 .andExpect {
                     status { isNotFound() }
@@ -76,19 +78,19 @@ internal class MovieControllerTest @Autowired constructor(
     }
 
     @Nested
-    @DisplayName("POST /api/movies")
+    @DisplayName("POST /api/users")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    inner class PostMovie {
+    inner class PostUser {
 
         @Test
-        fun `should add new movie`() {
+        fun `should add new user`() {
             //given
-            val newMovie = Movie(4, "1004", "posterPath4")
+            val newUser = User(3, "mama", "mama@email.com")
 
             //when
-            val performPost = mockMvc.post("/api/movies/") {
+            val performPost = mockMvc.post("/api/users/") {
                 contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(newMovie)
+                content = objectMapper.writeValueAsString(newUser)
             }
 
             //then
@@ -96,9 +98,9 @@ internal class MovieControllerTest @Autowired constructor(
                 .andDo { print() }
                 .andExpect {
                     status { isCreated() }
-                    jsonPath("$.id") { value("4") }
-                    jsonPath("$.movieId") { value("1004") }
-                    jsonPath("$.posterPath") { value("posterPath4") }
+                    jsonPath("$.id") { value(newUser.id) }
+                    jsonPath("$.username") { value(newUser.username) }
+                    jsonPath("$.email") { value(newUser.email) }
                 }
         }
 
@@ -106,12 +108,12 @@ internal class MovieControllerTest @Autowired constructor(
         @Test
         fun `should return BAD REQUEST if movie with given 'id' already exists`() {
             //given
-            val invalidMovie = Movie(1, "1001", "posterPath")
+            val invalidUser = Movie(1, "tin", "tin@gmail.com")
 
             //when
-            val performPost = mockMvc.post("/api/movies/") {
+            val performPost = mockMvc.post("/api/users/") {
                 contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(invalidMovie)
+                content = objectMapper.writeValueAsString(invalidUser)
             }
 
             //then
@@ -124,19 +126,19 @@ internal class MovieControllerTest @Autowired constructor(
     }
 
     @Nested
-    @DisplayName("PATCH /api/movies")
+    @DisplayName("PATCH /api/users")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    inner class PatchMovie {
+    inner class PatchUser {
 
         @Test
-        fun `should update an existing movie`() {
+        fun `should update an existing user`() {
             //given
-            val updatedMovie = Movie(1, "1011", "posterPath")
+            val updatedUser = User(1, "updatedTin", "tin@gmail.com")
 
             //when
-            val performPatch = mockMvc.patch("/api/movies/") {
+            val performPatch = mockMvc.patch("/api/users/") {
                 contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(updatedMovie)
+                content = objectMapper.writeValueAsString(updatedUser)
             }
 
             //then
@@ -146,29 +148,29 @@ internal class MovieControllerTest @Autowired constructor(
                     status { isOk() }
                     content {
                         contentType(MediaType.APPLICATION_JSON)
-                        jsonPath("$.id") { value(updatedMovie.id) }
-                        jsonPath("$.movieId") { value(updatedMovie.movieId) }
-                        jsonPath("$.posterPath") { value(updatedMovie.posterPath) }
+                        jsonPath("$.id") { value(updatedUser.id) }
+                        jsonPath("$.username") { value(updatedUser.username) }
+                        jsonPath("$.email") { value(updatedUser.email) }
                     }
                 }
 
-            mockMvc.get("/api/movies/")
+            mockMvc.get("/api/users/")
                 .andExpect {
-                    jsonPath("$[0].id") { value(updatedMovie.id) }
-                    jsonPath("$[0].movieId") { value(updatedMovie.movieId) }
-                    jsonPath("$[0].posterPath") { value(updatedMovie.posterPath) }
+                    jsonPath("$[0].id") { value(updatedUser.id) }
+                    jsonPath("$[0].username") { value(updatedUser.username) }
+                    jsonPath("$[0].email") { value(updatedUser.email) }
                 }
         }
 
         @Test
-        fun `should return BAD REQUEST if movie with given id doesn't exist`() {
+        fun `should return BAD REQUEST if user with given email doesn't exist`() {
             //given
-            val invalidMovie = Movie(-5, "minus5", "posterPathMinus5")
+            val invalidUser = User(-5, "invalidMan", "invalid@email.com")
 
             //when
-            val performPatchRequest = mockMvc.patch("/api/movies/") {
+            val performPatchRequest = mockMvc.patch("/api/users/") {
                 contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(invalidMovie)
+                content = objectMapper.writeValueAsString(invalidUser)
             }
 
             //then
@@ -179,32 +181,32 @@ internal class MovieControllerTest @Autowired constructor(
     }
 
     @Nested
-    @DisplayName("DELETE /api/movies/{id}")
+    @DisplayName("DELETE /api/users/{email}")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     inner class DeleteMovie {
 
         @Test
-        fun `should delete the movie with the given id`() {
+        fun `should delete the user with the given email`() {
             //given
-            val id = 1
+            val email = "tin@gmail.com"
 
             //when //then
-            mockMvc.delete("/api/movies/$id")
+            mockMvc.delete("/api/users/$email")
                 .andDo { print() }
                 .andExpect { status { isNoContent() } }
 
-            mockMvc.get("/api/movies/$id")
+            mockMvc.get("/api/users/$email")
                 .andDo { print() }
                 .andExpect { status { isNotFound() } }
         }
 
         @Test
-        fun `should return NOT FOUND if the movie with the given id doesn't exist`() {
+        fun `should return NOT FOUND if the user with the given email doesn't exist`() {
             //given
-            val id = -5
+            val email = "fake@email.com"
 
             //when //then
-            mockMvc.delete("/api/movies/$id")
+            mockMvc.delete("/api/users/$email")
                 .andDo { print() }
                 .andExpect { status { isNotFound() } }
         }
