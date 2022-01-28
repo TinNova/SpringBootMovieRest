@@ -25,6 +25,12 @@ internal class MovieControllerTest @Autowired constructor(
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     inner class GetBanks {
 
+        /**
+         * These tests fail because they are integration tests without a mock db to test against
+         * Just like in Nutmeg & CTM we have jsons to test against
+         */
+        //This Returns [] because there are no movies when the server or the test server starts
+        //I need to find a way to create a db for testing purposes. Or find a way to mock it
         @Test
         fun `should return all movies`() {
             //when //then
@@ -83,7 +89,7 @@ internal class MovieControllerTest @Autowired constructor(
         @Test
         fun `should add new movie`() {
             //given
-            val newMovie = Movie(4, "1004", "posterPath4")
+            val newMovie = Movie(1,"1004", "posterPath4")
 
             //when
             val performPost = mockMvc.post("/api/movies/") {

@@ -1,16 +1,18 @@
 package com.tinnovakovic.springboot.fluttermovierest.datasource
 
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class MockMovieDataSourceImplTest {
+internal class MovieDataSourceImplTest {
 
-    private val mockMovieDataSourceImpl = MockMovieDataSourceImpl()
+    private val movieRepo: MovieRepo = mockk(relaxed = true)
+    private val sut = MovieDataSourceImpl(movieRepo)
 
     @Test
     fun `should provide a list of movies`() {
         // when
-        val movies = mockMovieDataSourceImpl.retrieveMovies()
+        val movies = sut.retrieveMovies()
 
         // then
         assertThat(movies.size).isGreaterThanOrEqualTo(3)
@@ -19,7 +21,7 @@ internal class MockMovieDataSourceImplTest {
     @Test
     fun `should provide some mock data`() {
         //when
-        val movies = mockMovieDataSourceImpl.retrieveMovies()
+        val movies = sut.retrieveMovies()
 
         //then
         assertThat(movies).allMatch { it.id != 0 }
