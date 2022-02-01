@@ -1,7 +1,7 @@
 package com.tinnovakovic.springboot.fluttermovierest.service
 
 import com.tinnovakovic.springboot.fluttermovierest.datasource.UserDataSource
-import com.tinnovakovic.springboot.fluttermovierest.model.User
+import com.tinnovakovic.springboot.fluttermovierest.model.AppUser
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
@@ -23,48 +23,48 @@ internal class UserServiceTest {
     @Test
     fun `WHEN getUser() THEN trigger retrieveUser()`() {
         //given
-        val email = "email@gmail.com"
+        val id = 1
 
         //when
-        sut.getUser(email)
+        sut.getUser(id)
 
         //then
-        verify(exactly = 1) { dataSource.retrieveUser(email) }
+        verify(exactly = 1) { dataSource.retrieveUser(id) }
     }
 
     @Test
     fun `WHEN createUser() THEN trigger createUser`() {
         //given
-        val user: User = mockk()
+        val appUser: AppUser = mockk()
 
         //when
-        sut.createUser(user)
+        sut.createUser(appUser)
 
         //then
-        verify(exactly = 1) { dataSource.createUser(user) }
+        verify(exactly = 1) { dataSource.createUser(appUser) }
     }
 
     @Test
     fun `WHEN updateUser() THEN trigger updateUser`() {
         //given
-        val user: User = mockk()
+        val appUser: AppUser = mockk()
 
         //when
-        sut.updateUser(user)
+        sut.updateUser(appUser)
 
         //then
-        verify(exactly = 1) { dataSource.updateUser(user) }
+        verify(exactly = 1) { dataSource.updateUser(appUser) }
     }
 
     @Test
     fun `WHEN deleteUser() THEN trigger deleteUser`() {
         //given
-        val email = "email"
+        val id = 1
 
         //when
-        sut.deleteUser(email)
+        sut.deleteUser(id)
 
         //then
-        verify(exactly = 1) { dataSource.deleteUser(email) }
+        verify(exactly = 1) { dataSource.deleteUser(id) }
     }
 }

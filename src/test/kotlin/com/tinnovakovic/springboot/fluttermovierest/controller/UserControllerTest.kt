@@ -2,8 +2,7 @@ package com.tinnovakovic.springboot.fluttermovierest.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
-import com.tinnovakovic.springboot.fluttermovierest.model.User
-import org.junit.jupiter.api.Assertions.*
+import com.tinnovakovic.springboot.fluttermovierest.model.AppUser
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -45,7 +44,7 @@ internal class UserControllerTest @Autowired constructor(
     @Nested
     @DisplayName("GET /api/users/{email}")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    inner class GetUser {
+    inner class GetAppUser {
         @Test
         fun `should return user with given email`() {
             //given
@@ -85,12 +84,12 @@ internal class UserControllerTest @Autowired constructor(
         @Test
         fun `should add new user`() {
             //given
-            val newUser = User(3, "mama", "mama@email.com")
+            val newAppUser = AppUser(3, "mama", "mama@email.com")
 
             //when
             val performPost = mockMvc.post("/api/users/") {
                 contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(newUser)
+                content = objectMapper.writeValueAsString(newAppUser)
             }
 
             //then
@@ -98,9 +97,9 @@ internal class UserControllerTest @Autowired constructor(
                 .andDo { print() }
                 .andExpect {
                     status { isCreated() }
-                    jsonPath("$.id") { value(newUser.id) }
-                    jsonPath("$.username") { value(newUser.username) }
-                    jsonPath("$.email") { value(newUser.email) }
+                    jsonPath("$.id") { value(newAppUser.id) }
+                    jsonPath("$.username") { value(newAppUser.username) }
+                    jsonPath("$.email") { value(newAppUser.email) }
                 }
         }
 
@@ -133,12 +132,12 @@ internal class UserControllerTest @Autowired constructor(
         @Test
         fun `should update an existing user`() {
             //given
-            val updatedUser = User(1, "updatedTin", "tin@gmail.com")
+            val updatedAppUser = AppUser(1, "updatedTin", "tin@gmail.com")
 
             //when
             val performPatch = mockMvc.patch("/api/users/") {
                 contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(updatedUser)
+                content = objectMapper.writeValueAsString(updatedAppUser)
             }
 
             //then
@@ -148,29 +147,29 @@ internal class UserControllerTest @Autowired constructor(
                     status { isOk() }
                     content {
                         contentType(MediaType.APPLICATION_JSON)
-                        jsonPath("$.id") { value(updatedUser.id) }
-                        jsonPath("$.username") { value(updatedUser.username) }
-                        jsonPath("$.email") { value(updatedUser.email) }
+                        jsonPath("$.id") { value(updatedAppUser.id) }
+                        jsonPath("$.username") { value(updatedAppUser.username) }
+                        jsonPath("$.email") { value(updatedAppUser.email) }
                     }
                 }
 
             mockMvc.get("/api/users/")
                 .andExpect {
-                    jsonPath("$[0].id") { value(updatedUser.id) }
-                    jsonPath("$[0].username") { value(updatedUser.username) }
-                    jsonPath("$[0].email") { value(updatedUser.email) }
+                    jsonPath("$[0].id") { value(updatedAppUser.id) }
+                    jsonPath("$[0].username") { value(updatedAppUser.username) }
+                    jsonPath("$[0].email") { value(updatedAppUser.email) }
                 }
         }
 
         @Test
         fun `should return BAD REQUEST if user with given email doesn't exist`() {
             //given
-            val invalidUser = User(-5, "invalidMan", "invalid@email.com")
+            val invalidAppUser = AppUser(-5, "invalidMan", "invalid@email.com")
 
             //when
             val performPatchRequest = mockMvc.patch("/api/users/") {
                 contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(invalidUser)
+                content = objectMapper.writeValueAsString(invalidAppUser)
             }
 
             //then

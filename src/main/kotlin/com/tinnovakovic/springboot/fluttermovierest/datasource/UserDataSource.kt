@@ -1,13 +1,13 @@
 package com.tinnovakovic.springboot.fluttermovierest.datasource
 
-import com.tinnovakovic.springboot.fluttermovierest.model.User
+import com.tinnovakovic.springboot.fluttermovierest.model.AppUser
 
 interface UserDataSource {
 
-    fun retrieveUsers(): List<User>
-    fun retrieveUser(email: String): User
-    fun createUser(user: User): User
-    fun updateUser(user: User): User
-    fun deleteUser(email: String)
+    fun retrieveUsers(): List<AppUser>
+    fun retrieveUser(id: Int): AppUser
+    fun createUser(appUser: AppUser): AppUser
+    fun updateUser(appUser: AppUser): AppUser
+    fun deleteUser(id: Int)
 
 }

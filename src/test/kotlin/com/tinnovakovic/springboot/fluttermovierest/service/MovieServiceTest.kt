@@ -2,13 +2,9 @@ package com.tinnovakovic.springboot.fluttermovierest.service
 
 import com.tinnovakovic.springboot.fluttermovierest.datasource.MovieDataSource
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
-import com.tinnovakovic.springboot.fluttermovierest.model.User
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import java.sql.DriverManager.println
 import java.util.Collections.emptyList
 
 internal class MovieServiceTest {
