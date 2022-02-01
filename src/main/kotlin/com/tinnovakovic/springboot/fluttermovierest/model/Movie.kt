@@ -7,13 +7,13 @@ import javax.persistence.*
 data class Movie(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
-    val id: Int = -1,
+    @Column(name = "id", nullable = false, updatable = false)
+    val id: Int,
     @Column(name = "movie_id", nullable = false, columnDefinition = "TEXT")
-    val movieId: String = "",
+    val movieId: String,
     @Column(name = "poster_path", nullable = false, columnDefinition = "TEXT")
-    val posterPath: String = "",
+    val posterPath: String,
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "movie_detail_id", referencedColumnName = "id")
-    var movieDetail: MovieDetail = MovieDetail(movieId = movieId, posterPath = posterPath)
+    var movieDetail: MovieDetail
 )

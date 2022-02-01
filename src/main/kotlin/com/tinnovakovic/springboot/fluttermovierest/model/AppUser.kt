@@ -13,9 +13,9 @@ data class AppUser(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
-    val id: Int = -1,
+    val id: Int,
     @Column(name = "username", nullable = false, columnDefinition = "TEXT")
-    val username: String = "",
+    val username: String,
     @Column(name = "email", nullable = false, columnDefinition = "TEXT")
-    val email: String = ""
+    val email: String
 )
