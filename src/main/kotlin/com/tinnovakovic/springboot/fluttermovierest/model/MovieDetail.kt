@@ -13,13 +13,13 @@ data class MovieDetail(
     @Column(name = "id")
     val id: Int,
     @Column(name = "movie_id")
-    val movieId: String,
+    val movieId: String = "",
     @Column(name = "title")
     val title: String,
     @Column(name = "overview")
     val overview: String,
     @Column(name = "poster_path")
-    val posterPath: String,
+    val posterPath: String = "",
     @Column(name = "backdrop_path")
     val backdropPath: String,
     @Column(name = "directors")

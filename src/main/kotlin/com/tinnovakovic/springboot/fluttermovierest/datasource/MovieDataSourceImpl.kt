@@ -23,6 +23,7 @@ class MovieDataSourceImpl(private val movieRepo: MovieRepo) : MovieDataSource {
 
     override fun createMovie(movie: Movie): Movie {
         return if (movieRepo.findById(movie.id).isEmpty) {
+            movie.movieDetail = movie.movieDetail.copy(movieId = movie.movieId, posterPath = movie.posterPath)// = movieDetail
             movieRepo.save(movie)
         } else {
             throw IllegalArgumentException("A movie with the 'id' ${movie.id} already exists")
