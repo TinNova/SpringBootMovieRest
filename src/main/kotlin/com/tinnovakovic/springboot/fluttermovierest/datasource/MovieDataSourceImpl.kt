@@ -1,35 +1,46 @@
 package com.tinnovakovic.springboot.fluttermovierest.datasource
 
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
+import com.tinnovakovic.springboot.fluttermovierest.model.RestMovie
 import org.springframework.stereotype.Repository
 import java.lang.IllegalArgumentException
 
 @Repository
 class MovieDataSourceImpl(private val movieRepo: MovieRepo) : MovieDataSource {
 
-    override fun retrieveMovies(): List<Movie> {
-        return movieRepo.findAll()
+    override fun retrieveMovies(): List<RestMovie> {
+        return movieRepo.findAll().map {
+            RestMovie(id = it.id, movieId = it.movieId, posterPath = it.posterPath)
+        }
     }
 
-    override fun retrieveMovie(id: Int): Movie {
+    override fun retrieveMovie(id: Int): RestMovie {
         movieRepo.findById(id).let {
             return if (it.isPresent) {
-                it.get()
+                RestMovie(id = it.get().id, movieId = it.get().movieId, posterPath = it.get().posterPath)
             } else {
                 throw NoSuchElementException("Could not find a movie with an 'id' of $id.")
             }
         }
     }
 
+    /**
+     * Movies can only be created by an Admin, not a user, so it's ok to use the SQL Movie model because the
+     * admin needs to populate the MovieDetail at the same time that they create a Movie
+     */
     override fun createMovie(movie: Movie): Movie {
         return if (movieRepo.findById(movie.id).isEmpty) {
-            movie.movieDetail = movie.movieDetail.copy(movieId = movie.movieId, posterPath = movie.posterPath)// = movieDetail
+            movie.movieDetail =
+                movie.movieDetail.copy(movieId = movie.movieId, posterPath = movie.posterPath)// = movieDetail
             movieRepo.save(movie)
         } else {
             throw IllegalArgumentException("A movie with the 'id' ${movie.id} already exists")
         }
     }
 
+    /**
+     * Movies can only be updated by an Admin, not a user, so using the SQL Movie model is fine
+     */
     override fun updateMovie(movie: Movie): Movie {
         return if (movieRepo.findById(movie.id).isPresent) {
             movieRepo.save(movie)
