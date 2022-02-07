@@ -1,7 +1,7 @@
 package com.tinnovakovic.springboot.fluttermovierest.datasource
 
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
-import com.tinnovakovic.springboot.fluttermovierest.model.RestMovie
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import org.springframework.stereotype.Repository
 import java.lang.IllegalArgumentException
 

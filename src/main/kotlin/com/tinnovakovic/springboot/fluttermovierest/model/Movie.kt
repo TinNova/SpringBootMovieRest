@@ -3,7 +3,10 @@ package com.tinnovakovic.springboot.fluttermovierest.model
 import javax.persistence.*
 
 @Entity
-@Table(name = "movie", uniqueConstraints = [UniqueConstraint(name = "unique_movie_constraints", columnNames = ["movie_id"])])
+@Table(
+    name = "movie",
+    uniqueConstraints = [UniqueConstraint(name = "unique_movie_constraints", columnNames = ["movie_id"])]
+)
 data class Movie(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,5 +18,16 @@ data class Movie(
     val posterPath: String,
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "movie_detail_id", referencedColumnName = "id")
-    var movieDetail: MovieDetail
+    var movieDetail: MovieDetail,
+
+    @ManyToMany(
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH]
+    )
+    @JoinTable(
+        name = "appUser_movie",
+        joinColumns = [JoinColumn(name = "movie_id")],
+        inverseJoinColumns = [JoinColumn(name = "appUser_id")]
+    )
+    val appUsers: Set<AppUser>
 )

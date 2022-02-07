@@ -1,7 +1,7 @@
 package com.tinnovakovic.springboot.fluttermovierest.controller
 
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
-import com.tinnovakovic.springboot.fluttermovierest.model.RestMovie
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import com.tinnovakovic.springboot.fluttermovierest.service.MovieService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

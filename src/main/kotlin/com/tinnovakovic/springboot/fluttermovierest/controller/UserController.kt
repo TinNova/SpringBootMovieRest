@@ -1,6 +1,7 @@
 package com.tinnovakovic.springboot.fluttermovierest.controller
 
-import com.tinnovakovic.springboot.fluttermovierest.model.AppUser
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestAppUser
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import com.tinnovakovic.springboot.fluttermovierest.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,18 +21,22 @@ class UserController(private val service: UserService) {
         ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
 
     @GetMapping("/")
-    fun getUsers(): List<AppUser> = service.getUsers()
+    fun getUsers(): List<RestAppUser> = service.getUsers()
 
     // This pathVariable needs to be replaced with a username password authentication
     @GetMapping("/{id}")
-    fun getUser(@PathVariable id: Int): AppUser = service.getUser(id)
+    fun getUser(@PathVariable id: Int): RestAppUser = service.getUser(id)
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun saveMovie(@PathVariable id: Int, @RequestBody restMovie: RestMovie): RestMovie = service.saveMovie(id, restMovie)
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addUser(@RequestBody appUser: AppUser): AppUser = service.createUser(appUser)
+    fun addUser(@RequestBody restAppUser: RestAppUser): RestAppUser = service.createUser(restAppUser)
 
     @PatchMapping("/")
-    fun updateUser(@RequestBody appUser: AppUser): AppUser = service.updateUser(appUser)
+    fun updateUser(@RequestBody restAppUser: RestAppUser): RestAppUser = service.updateUser(restAppUser)
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

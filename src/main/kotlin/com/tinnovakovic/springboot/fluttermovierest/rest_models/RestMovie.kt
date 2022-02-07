@@ -1,4 +1,4 @@
-package com.tinnovakovic.springboot.fluttermovierest.model
+package com.tinnovakovic.springboot.fluttermovierest.rest_models
 
 class RestMovie(
     val id: Int,

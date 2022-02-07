@@ -17,5 +17,16 @@ data class AppUser(
     @Column(name = "username", nullable = false, columnDefinition = "TEXT")
     val username: String,
     @Column(name = "email", nullable = false, columnDefinition = "TEXT")
-    val email: String
+    val email: String,
+
+    @ManyToMany(
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH]
+    )
+    @JoinTable(
+        name = "appUser_movie",
+        joinColumns = [JoinColumn(name = "appUser_id")],
+        inverseJoinColumns = [JoinColumn(name = "movie_id")]
+    )
+    val movies: Set<Movie> // convienence method? Do we need that?
 )

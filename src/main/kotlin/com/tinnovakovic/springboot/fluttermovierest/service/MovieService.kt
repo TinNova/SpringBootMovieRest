@@ -2,7 +2,7 @@ package com.tinnovakovic.springboot.fluttermovierest.service
 
 import com.tinnovakovic.springboot.fluttermovierest.datasource.MovieDataSource
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
-import com.tinnovakovic.springboot.fluttermovierest.model.RestMovie
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import org.springframework.stereotype.Service
 
 @Service
