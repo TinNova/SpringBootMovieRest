@@ -1,9 +1,8 @@
-package com.tinnovakovic.springboot.fluttermovierest.datasource
+package com.tinnovakovic.springboot.fluttermovierest.repo
 
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface MovieRepo: JpaRepository<Movie, Int> {
-}
+interface MovieRepo: JpaRepository<Movie, Int>

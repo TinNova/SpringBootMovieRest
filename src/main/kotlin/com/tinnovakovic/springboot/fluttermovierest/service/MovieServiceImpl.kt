@@ -1,20 +1,21 @@
-package com.tinnovakovic.springboot.fluttermovierest.datasource
+package com.tinnovakovic.springboot.fluttermovierest.service
 
+import com.tinnovakovic.springboot.fluttermovierest.repo.MovieRepo
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
-import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 
-@Repository
-class MovieDataSourceImpl(private val movieRepo: MovieRepo) : MovieDataSource {
+@Service
+class MovieServiceImpl(private val movieRepo: MovieRepo): MovieService {
 
-    override fun retrieveMovies(): List<RestMovie> {
+    override fun getMovies(): List<RestMovie> {
         return movieRepo.findAll().map {
             RestMovie(id = it.id, movieId = it.movieId, posterPath = it.posterPath)
         }
     }
 
-    override fun retrieveMovie(id: Int): RestMovie {
+    override fun getMovie(id: Int): RestMovie {
         movieRepo.findById(id).let {
             return if (it.isPresent) {
                 RestMovie(id = it.get().id, movieId = it.get().movieId, posterPath = it.get().posterPath)

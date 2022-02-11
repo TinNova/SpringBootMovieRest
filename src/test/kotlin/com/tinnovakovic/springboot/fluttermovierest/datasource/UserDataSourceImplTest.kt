@@ -1,5 +1,6 @@
 package com.tinnovakovic.springboot.fluttermovierest.datasource
 
+import com.tinnovakovic.springboot.fluttermovierest.repo.UserRepo
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test

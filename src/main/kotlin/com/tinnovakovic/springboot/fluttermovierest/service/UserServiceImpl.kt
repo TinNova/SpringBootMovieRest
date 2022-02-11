@@ -1,22 +1,26 @@
-package com.tinnovakovic.springboot.fluttermovierest.datasource
+package com.tinnovakovic.springboot.fluttermovierest.service
 
+import com.tinnovakovic.springboot.fluttermovierest.repo.MovieRepo
+import com.tinnovakovic.springboot.fluttermovierest.repo.UserRepo
 import com.tinnovakovic.springboot.fluttermovierest.model.AppUser
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestAppUser
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
-import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 
-@Repository
-class UserDataSourceImpl(private val userRepo: UserRepo, private val movieRepo: MovieRepo) : UserDataSource {
+@Service
+class UserServiceImpl(private val userRepo: UserRepo, private val movieRepo: MovieRepo) : UserService {
 
-    override fun retrieveUsers(): List<RestAppUser> {
+    // to return movieIds you need to query the app_user_movie table, but we only want to do this in AppUserDetail
+    override fun getUsers(): List<RestAppUser> {
         return userRepo.findAll().map {
             RestAppUser(id = it.id, username = it.username, email = it.email)
         }
     }
 
-    override fun retrieveUser(id: Int): RestAppUser {
+    // to return movieIds you need to query the app_user_movie table, but we only want to do this in AppUserDetail
+    override fun getUser(id: Int): RestAppUser {
         userRepo.findById(id).let {
             return if (it.isPresent) {
                 RestAppUser(id = it.get().id, username = it.get().username, email = it.get().email)
