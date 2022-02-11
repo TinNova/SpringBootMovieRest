@@ -35,8 +35,8 @@ class UserController(private val service: UserService) {
     @ResponseStatus(HttpStatus.CREATED)
     fun addUser(@RequestBody restAppUser: RestAppUser): RestAppUser = service.createUser(restAppUser)
 
-    @PatchMapping("/")
-    fun updateUser(@RequestBody restAppUser: RestAppUser): RestAppUser = service.updateUser(restAppUser)
+//    @PatchMapping("/")
+//    fun updateUser(@RequestBody restAppUser: RestAppUser): RestAppUser = service.updateUser(restAppUser)
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

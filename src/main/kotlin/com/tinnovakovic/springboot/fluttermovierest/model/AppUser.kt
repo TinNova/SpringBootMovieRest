@@ -12,21 +12,13 @@ import javax.persistence.*
 data class AppUser(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     val id: Int,
     @Column(name = "username", nullable = false, columnDefinition = "TEXT")
     val username: String,
     @Column(name = "email", nullable = false, columnDefinition = "TEXT")
     val email: String,
-
-    @ManyToMany(
-        fetch = FetchType.LAZY,
-        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH]
-    )
-    @JoinTable(
-        name = "appUser_movie",
-        joinColumns = [JoinColumn(name = "appUser_id")],
-        inverseJoinColumns = [JoinColumn(name = "movie_id")]
-    )
-    val movies: Set<Movie> // convienence method? Do we need that?
+    @OneToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "app_user_detail_id", referencedColumnName = "id")
+    var appUserDetail: AppUserDetail,
 )

@@ -10,7 +10,7 @@ interface UserService {
     fun getUsers(): List<RestAppUser>
     fun getUser(id: Int): RestAppUser
     fun createUser(restAppUser: RestAppUser): RestAppUser
-    fun updateUser(restAppUser: RestAppUser): RestAppUser
+//    fun updateUser(restAppUser: RestAppUser): RestAppUser
     fun deleteUser(id: Int): Unit
     fun saveMovie(id: Int, restMovie: RestMovie): RestMovie
 }

@@ -19,15 +19,4 @@ data class Movie(
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "movie_detail_id", referencedColumnName = "id")
     var movieDetail: MovieDetail,
-
-    @ManyToMany(
-        fetch = FetchType.LAZY,
-        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH]
-    )
-    @JoinTable(
-        name = "appUser_movie",
-        joinColumns = [JoinColumn(name = "movie_id")],
-        inverseJoinColumns = [JoinColumn(name = "appUser_id")]
-    )
-    val appUsers: Set<AppUser>
 )

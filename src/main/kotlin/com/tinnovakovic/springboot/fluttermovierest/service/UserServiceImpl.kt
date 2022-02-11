@@ -3,14 +3,20 @@ package com.tinnovakovic.springboot.fluttermovierest.service
 import com.tinnovakovic.springboot.fluttermovierest.repo.MovieRepo
 import com.tinnovakovic.springboot.fluttermovierest.repo.UserRepo
 import com.tinnovakovic.springboot.fluttermovierest.model.AppUser
+import com.tinnovakovic.springboot.fluttermovierest.model.AppUserDetail
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
+import com.tinnovakovic.springboot.fluttermovierest.repo.AppUserDetailRepo
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestAppUser
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 
 @Service
-class UserServiceImpl(private val userRepo: UserRepo, private val movieRepo: MovieRepo) : UserService {
+class UserServiceImpl(
+    private val userRepo: UserRepo,
+    private val userDetailRepo: AppUserDetailRepo,
+    val movieRepo: MovieRepo
+) : UserService {
 
     // to return movieIds you need to query the app_user_movie table, but we only want to do this in AppUserDetail
     override fun getUsers(): List<RestAppUser> {
@@ -31,40 +37,46 @@ class UserServiceImpl(private val userRepo: UserRepo, private val movieRepo: Mov
     }
 
     override fun createUser(restAppUser: RestAppUser): RestAppUser {
-        return if (userRepo.findById(restAppUser.id).isEmpty) {
-            val savedMovie = userRepo.save(
+        return if (userRepo.findById(restAppUser.id).isEmpty) { //this check has to be done by email or username,
+            // because the user will not provide a SQL id when creating an account
+            userRepo.save(
                 AppUser(
-                    id = restAppUser.id,
+                    id = -1,
                     username = restAppUser.username,
                     email = restAppUser.email,
-                    movies = emptySet()
+                    appUserDetail = AppUserDetail(
+                        id = -1,
+                        username = restAppUser.username,
+                        email = restAppUser.email,
+                        favMovies = emptySet()
+                    )
                 )
             )
-
-            restAppUser.copy(id = savedMovie.id)
+            restAppUser
         } else {
             throw IllegalArgumentException("A user with the 'email' ${restAppUser.email} already exists")
         }
     }
 
-    override fun updateUser(restAppUser: RestAppUser): RestAppUser {
-        userRepo.findById(restAppUser.id).let {
-            return if (it.isPresent) {
-                userRepo.save(
-                    AppUser(
-                        id = restAppUser.id,
-                        username = restAppUser.username,
-                        email = restAppUser.email,
-                        movies = it.get().movies
-                    )
-                )
-
-                restAppUser
-            } else {
-                throw NoSuchElementException("Could not find a user with an 'email' of ${restAppUser.email}.")
-            }
-        }
-    }
+    // prevent changing email and username. Unneeded feature
+//    override fun updateUser(restAppUser: RestAppUser): RestAppUser {
+//        userRepo.findById(restAppUser.id).let {
+//            return if (it.isPresent) {
+//                userRepo.save(
+//                    AppUser(
+//                        id = restAppUser.id,
+//                        username = restAppUser.username,
+//                        email = restAppUser.email,
+//                        movies = it.get().movies
+//                    )
+//                )
+//
+//                restAppUser
+//            } else {
+//                throw NoSuchElementException("Could not find a user with an 'email' of ${restAppUser.email}.")
+//            }
+//        }
+//    }
 
     override fun deleteUser(id: Int) {
         if (userRepo.findById(id).isPresent) {
@@ -80,17 +92,17 @@ class UserServiceImpl(private val userRepo: UserRepo, private val movieRepo: Mov
         val sqlMovie: Movie = movieRepo.findById(restMovie.id).get()
 
         // get the sqlUser
-        userRepo.findById(id).let {
+        userDetailRepo.findById(id).let {
             return if (it.isPresent) {
                 // get the movies currently in the user
-                val userSqlMovies: MutableSet<Movie> = it.get().movies as MutableSet<Movie>
+                val userSqlMovies: MutableSet<Movie> = it.get().favMovies as MutableSet<Movie>
                 userSqlMovies.add(sqlMovie)
-                userRepo.save(
-                    AppUser(
+                userDetailRepo.save(
+                    AppUserDetail(
                         id = it.get().id,
                         username = it.get().username,
                         email = it.get().email,
-                        movies = userSqlMovies
+                        favMovies = userSqlMovies
                     )
                 )
 
