@@ -5,15 +5,15 @@ import javax.persistence.*
 @Entity
 @Table(
     name = "movie_detail",
-    uniqueConstraints = [UniqueConstraint(name = "unique_movieDetail_constraints", columnNames = ["movie_id"])]
+    uniqueConstraints = [UniqueConstraint(name = "unique_movieDetail_constraints", columnNames = ["mdb_id"])]
 )
 data class MovieDetail(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     val id: Int,
-    @Column(name = "movie_id")
-    val movieId: String = "",
+    @Column(name = "mdb_id")
+    val mDbId: String = "",
     @Column(name = "title")
     val title: String,
     @Column(name = "overview")
