@@ -2,6 +2,7 @@ package com.tinnovakovic.springboot.fluttermovierest.controller
 
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovieDetail
 import com.tinnovakovic.springboot.fluttermovierest.service.MovieService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -25,7 +26,7 @@ class MovieController(private val service: MovieService) {
     fun getMovies(): List<RestMovie> = service.getMovies()
 
     @GetMapping("/{id}")
-    fun getMovie(@PathVariable id: Int): RestMovie = service.getMovie(id)
+    fun getMovie(@PathVariable id: Int): RestMovieDetail = service.getMovie(id)
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)

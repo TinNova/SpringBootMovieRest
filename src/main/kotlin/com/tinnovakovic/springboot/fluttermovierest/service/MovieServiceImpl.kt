@@ -23,7 +23,24 @@ class MovieServiceImpl(
     override fun getMovie(id: Int): RestMovieDetail {
         movieDetailRepo.findById(id).let {
             return if (it.isPresent) {
-                RestMovie(id = it.get().id, mDbId = it.get().mDbId, posterPath = it.get().posterPath)
+                RestMovieDetail(
+                    id = it.get().id,
+                    mDbId = it.get().mDbId,
+                    title = it.get().title,
+                    overview = it.get().overview,
+                    posterPath = it.get().posterPath,
+                    backdropPath = it.get().backdropPath,
+                    directors = it.get().directors,
+                    popularity = it.get().popularity,
+                    releaseDate = it.get().releaseDate,
+                    revenue = it.get().revenue,
+                    runtime = it.get().runtime,
+                    tagline = it.get().tagline,
+                    voteAverage = it.get().voteAverage,
+                    voteCount = it.get().voteCount,
+                    isFavourite = it.get().isFavourite,
+                    appUsers = it.get().appUsers.map { it.id }
+                )
             } else {
                 throw NoSuchElementException("Could not find a movie with an 'id' of $id.")
             }
