@@ -40,16 +40,6 @@ data class MovieDetail(
     val voteCount: Int,
     @Column(name = "is_favourite")
     val isFavourite: Boolean,
-    @ManyToMany(
-        fetch = FetchType.LAZY,
-        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH]
-    )
-    @JoinTable(
-        name = "appUserDetail_movieDetail",
-        joinColumns = [JoinColumn(name = "movieDetail_id")],
-        inverseJoinColumns = [JoinColumn(name = "appUserDetail_id")]
-    )
-    val appUsers: Set<AppUser>
 )
 
 //  Handle lists later

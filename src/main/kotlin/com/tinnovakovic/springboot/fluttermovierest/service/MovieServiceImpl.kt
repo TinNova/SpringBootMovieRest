@@ -38,8 +38,7 @@ class MovieServiceImpl(
                     tagline = it.get().tagline,
                     voteAverage = it.get().voteAverage,
                     voteCount = it.get().voteCount,
-                    isFavourite = it.get().isFavourite,
-                    appUsers = it.get().appUsers.map { it.id }
+                    isFavourite = it.get().isFavourite
                 )
             } else {
                 throw NoSuchElementException("Could not find a movie with an 'id' of $id.")

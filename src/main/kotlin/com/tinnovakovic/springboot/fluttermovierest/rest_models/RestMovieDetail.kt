@@ -15,6 +15,5 @@ data class RestMovieDetail(
     val tagline: String,
     val voteAverage: Double,
     val voteCount: Int,
-    val isFavourite: Boolean,
-    val appUsers: List<Int> = emptyList()
-)
+    val isFavourite: Boolean
+    )

@@ -6,6 +6,7 @@ import com.tinnovakovic.springboot.fluttermovierest.model.AppUser
 import com.tinnovakovic.springboot.fluttermovierest.model.AppUserDetail
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
 import com.tinnovakovic.springboot.fluttermovierest.repo.AppUserDetailRepo
+import com.tinnovakovic.springboot.fluttermovierest.repo.MovieDetailRepo
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestAppUser
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import org.springframework.stereotype.Service
@@ -15,13 +16,14 @@ import java.lang.IllegalArgumentException
 class UserServiceImpl(
     private val userRepo: UserRepo,
     private val userDetailRepo: AppUserDetailRepo,
-    val movieRepo: MovieRepo
+    private val movieRepo: MovieRepo,
+    private val movieDetailRepo: MovieDetailRepo
 ) : UserService {
 
     // to return movieIds you need to query the app_user_movie table, but we only want to do this in AppUserDetail
     override fun getUsers(): List<RestAppUser> {
         return userRepo.findAll().map {
-            RestAppUser(id = it.id, username = it.username, email = it.email)
+            RestAppUser(id = it.id, username = it.username, email = it.email, movies = it.favMovies.map { it.id }.toMutableSet())
         }
     }
 
@@ -29,7 +31,7 @@ class UserServiceImpl(
     override fun getUser(id: Int): RestAppUser {
         userRepo.findById(id).let {
             return if (it.isPresent) {
-                RestAppUser(id = it.get().id, username = it.get().username, email = it.get().email)
+                RestAppUser(id = it.get().id, username = it.get().username, email = it.get().email, movies = it.get().favMovies.map { it.id }.toMutableSet())
             } else {
                 throw NoSuchElementException("Could not find a user with an id of $id.")
             }
@@ -47,9 +49,9 @@ class UserServiceImpl(
                     appUserDetail = AppUserDetail(
                         id = -1,
                         username = restAppUser.username,
-                        email = restAppUser.email,
-                        favMovies = emptySet()
-                    )
+                        email = restAppUser.email
+                    ),
+                    favMovies = emptySet()
                 )
             )
             restAppUser
@@ -92,16 +94,17 @@ class UserServiceImpl(
         val sqlMovie: Movie = movieRepo.findById(restMovie.id).get()
 
         // get the sqlUser
-        userDetailRepo.findById(id).let {
+        userRepo.findById(id).let {
             return if (it.isPresent) {
                 // get the movies currently in the user
                 val userSqlMovies: MutableSet<Movie> = it.get().favMovies as MutableSet<Movie>
                 userSqlMovies.add(sqlMovie)
-                userDetailRepo.save(
-                    AppUserDetail(
+                userRepo.save(
+                    AppUser(
                         id = it.get().id,
                         username = it.get().username,
                         email = it.get().email,
+                        appUserDetail = it.get().appUserDetail,
                         favMovies = userSqlMovies
                     )
                 )

@@ -1,6 +1,9 @@
 package com.tinnovakovic.springboot.fluttermovierest.model
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator
 import javax.persistence.*
+
 
 @Entity
 @Table(
@@ -19,4 +22,6 @@ data class Movie(
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "movie_detail_id", referencedColumnName = "id")
     var movieDetail: MovieDetail,
+    @ManyToMany(mappedBy = "favMovies")
+    val appUsers: Set<AppUser>
 )

@@ -17,17 +17,7 @@ data class AppUserDetail (
     @Column(name = "username", nullable = false, columnDefinition = "TEXT")
     val username: String,
     @Column(name = "email", nullable = false, columnDefinition = "TEXT")
-    val email: String,
-    @ManyToMany(
-        fetch = FetchType.LAZY,
-        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH]
-    )
-    @JoinTable(
-        name = "appUserDetail_movieDetail",
-        joinColumns = [JoinColumn(name = "appUserDetail_id")],
-        inverseJoinColumns = [JoinColumn(name = "movieDetail_id")]
-    )
-    val favMovies: Set<Movie>
+    val email: String
 )
 //    val favActors: List<Int>
 //    val favDirectors: List<Int>

@@ -2,6 +2,6 @@ package com.tinnovakovic.springboot.fluttermovierest.rest_models
 
 class RestMovie(
     val id: Int,
-    val movieId: String,
+    val mDbId: String,
     val posterPath: String,
 )
