@@ -30,10 +30,10 @@ class MovieController(private val service: MovieService) {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addMovie(@RequestBody Movie: Movie): Movie = service.createMovie(Movie)
+    fun addMovie(@RequestBody restMovieDetail: RestMovieDetail): RestMovie = service.createMovie(restMovieDetail)
 
     @PatchMapping("/")
-    fun updateMovie(@RequestBody movie: Movie): Movie = service.updateMovie(movie)
+    fun updateMovie(@RequestBody restMovieDetail: RestMovieDetail): RestMovieDetail = service.updateMovie(restMovieDetail)
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

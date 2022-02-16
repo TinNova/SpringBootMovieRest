@@ -8,7 +8,7 @@ interface MovieService {
 
     fun getMovies(): List<RestMovie>
     fun getMovie(id: Int): RestMovieDetail
-    fun createMovie(movie: Movie): Movie
-    fun updateMovie(movie: Movie): Movie
+    fun createMovie(restMovieDetail: RestMovieDetail): RestMovie
+    fun updateMovie(restMovieDetail: RestMovieDetail): RestMovieDetail
     fun deleteMovie(id: Int): Unit
 }

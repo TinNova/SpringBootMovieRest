@@ -2,6 +2,7 @@ package com.tinnovakovic.springboot.fluttermovierest.service
 
 import com.tinnovakovic.springboot.fluttermovierest.repo.MovieRepo
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
+import com.tinnovakovic.springboot.fluttermovierest.model.MovieDetail
 import com.tinnovakovic.springboot.fluttermovierest.repo.MovieDetailRepo
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovieDetail
@@ -50,24 +51,71 @@ class MovieServiceImpl(
      * Movies can only be created by an Admin, not a user, so it's ok to use the SQL Movie model because the
      * admin needs to populate the MovieDetail at the same time that they create a Movie
      */
-    override fun createMovie(movie: Movie): Movie {
-        return if (movieRepo.findById(movie.id).isEmpty) {
-            movie.movieDetail =
-                movie.movieDetail.copy(mDbId = movie.mDbId, posterPath = movie.posterPath)// = movieDetail
-            movieRepo.save(movie)
+    override fun createMovie(restMovieDetail: RestMovieDetail): RestMovie {
+        return if (movieRepo.findById(restMovieDetail.id).isEmpty) { // doesn't make sense to use id as an id is created by SQL, so check against MdbId
+            val movie = movieRepo.save(
+                Movie(
+                    id = -1,
+                    mDbId = restMovieDetail.mDbId,
+                    posterPath = restMovieDetail.posterPath,
+                    movieDetail = MovieDetail(
+                        id = restMovieDetail.id,
+                        mDbId = restMovieDetail.mDbId,
+                        title = restMovieDetail.title,
+                        overview = restMovieDetail.overview,
+                        posterPath = restMovieDetail.posterPath,
+                        backdropPath = restMovieDetail.backdropPath,
+                        directors = restMovieDetail.directors,
+                        popularity = restMovieDetail.popularity,
+                        releaseDate = restMovieDetail.releaseDate,
+                        revenue = restMovieDetail.revenue,
+                        runtime = restMovieDetail.runtime,
+                        tagline = restMovieDetail.tagline,
+                        voteAverage = restMovieDetail.voteAverage,
+                        voteCount = restMovieDetail.voteCount,
+                        isFavourite = restMovieDetail.isFavourite
+                    ),
+                    appUsers = emptySet()
+                )
+            )
+            RestMovie(id = movie.id, mDbId = movie.mDbId, posterPath = movie.posterPath)
         } else {
-            throw IllegalArgumentException("A movie with the 'id' ${movie.id} already exists")
+            throw IllegalArgumentException("A movie with the 'id' ${restMovieDetail.id} already exists")
         }
     }
 
-    /**
-     * Movies can only be updated by an Admin, not a user, so using the SQL Movie model is fine
-     */
-    override fun updateMovie(movie: Movie): Movie {
-        return if (movieRepo.findById(movie.id).isPresent) {
-            movieRepo.save(movie)
-        } else {
-            throw NoSuchElementException("Could not find a movie with an 'id' of ${movie.id}.")
+    override fun updateMovie(restMovieDetail: RestMovieDetail): RestMovieDetail {
+        movieRepo.findById(restMovieDetail.id).let {
+            return if (it.isPresent) {
+                movieRepo.save(
+                    it.get().copy(
+                        id = restMovieDetail.id,
+                        mDbId = restMovieDetail.mDbId,
+                        posterPath = restMovieDetail.posterPath,
+                        movieDetail = MovieDetail(
+                            id = restMovieDetail.id,
+                            mDbId = restMovieDetail.mDbId,
+                            title = restMovieDetail.title,
+                            overview = restMovieDetail.overview,
+                            posterPath = restMovieDetail.posterPath,
+                            backdropPath = restMovieDetail.backdropPath,
+                            directors = restMovieDetail.directors,
+                            popularity = restMovieDetail.popularity,
+                            releaseDate = restMovieDetail.releaseDate,
+                            revenue = restMovieDetail.revenue,
+                            runtime = restMovieDetail.runtime,
+                            tagline = restMovieDetail.tagline,
+                            voteAverage = restMovieDetail.voteAverage,
+                            voteCount = restMovieDetail.voteCount,
+                            isFavourite = restMovieDetail.isFavourite
+                        ),
+                        appUsers = it.get().appUsers
+                    )
+                )
+                restMovieDetail
+            } else {
+                throw NoSuchElementException("Could not find a movie with an 'id' of ${restMovieDetail.id}.")
+            }
         }
     }
 
