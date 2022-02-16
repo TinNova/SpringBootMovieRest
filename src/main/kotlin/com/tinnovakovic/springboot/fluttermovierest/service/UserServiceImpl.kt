@@ -23,7 +23,12 @@ class UserServiceImpl(
     // to return movieIds you need to query the app_user_movie table, but we only want to do this in AppUserDetail
     override fun getUsers(): List<RestAppUser> {
         return userRepo.findAll().map {
-            RestAppUser(id = it.id, username = it.username, email = it.email, movies = it.favMovies.map { it.id }.toMutableSet())
+            RestAppUser(
+                id = it.id,
+                username = it.username,
+                email = it.email,
+                movies = it.favMovies.map { it.id }.toMutableSet()
+            )
         }
     }
 
@@ -31,7 +36,12 @@ class UserServiceImpl(
     override fun getUser(id: Int): RestAppUser {
         userRepo.findById(id).let {
             return if (it.isPresent) {
-                RestAppUser(id = it.get().id, username = it.get().username, email = it.get().email, movies = it.get().favMovies.map { it.id }.toMutableSet())
+                RestAppUser(
+                    id = it.get().id,
+                    username = it.get().username,
+                    email = it.get().email,
+                    movies = it.get().favMovies.map { it.id }.toMutableSet()
+                )
             } else {
                 throw NoSuchElementException("Could not find a user with an id of $id.")
             }
@@ -89,30 +99,19 @@ class UserServiceImpl(
     }
 
     override fun saveMovie(id: Int, restMovie: RestMovie): RestMovie {
-
-        // get the SqlMovie for the Movie we want to save to User
-        val sqlMovie: Movie = movieRepo.findById(restMovie.id).get()
-
-        // get the sqlUser
-        userRepo.findById(id).let {
-            return if (it.isPresent) {
-                // get the movies currently in the user
-                val userSqlMovies: MutableSet<Movie> = it.get().favMovies as MutableSet<Movie>
-                userSqlMovies.add(sqlMovie)
-                userRepo.save(
-                    AppUser(
-                        id = it.get().id,
-                        username = it.get().username,
-                        email = it.get().email,
-                        appUserDetail = it.get().appUserDetail,
-                        favMovies = userSqlMovies
-                    )
-                )
-
-                restMovie
+        movieRepo.findById(restMovie.id).let { entityMovie ->
+            if (entityMovie.isPresent) {
+                userRepo.findById(id).let { entityUser ->
+                    return if (entityUser.isPresent) {
+                        val userEntityMovies: Set<Movie> = entityUser.get().favMovies.plus(entityMovie.get())
+                        userRepo.save(entityUser.get().copy(favMovies = userEntityMovies))
+                        restMovie
+                    } else {
+                        throw NoSuchElementException("Could not find a user with an 'id' of ${id}.")
+                    }
+                }
             } else {
-                throw NoSuchElementException("Could not find a user with an 'id' of ${id}.")
-
+                throw NoSuchElementException("Could not find a movie with an 'id' of ${restMovie.id}.")
             }
         }
     }
