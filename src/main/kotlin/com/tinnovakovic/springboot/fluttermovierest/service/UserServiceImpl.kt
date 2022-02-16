@@ -49,8 +49,7 @@ class UserServiceImpl(
     }
 
     override fun createUser(restAppUser: RestAppUser): RestAppUser {
-        return if (userRepo.findById(restAppUser.id).isEmpty) { //this check has to be done by email or username,
-            // because the user will not provide a SQL id when creating an account
+        return if (userRepo.findByEmail(restAppUser.email).isEmpty) {
             val appUser = userRepo.save(
                 AppUser(
                     id = -1,

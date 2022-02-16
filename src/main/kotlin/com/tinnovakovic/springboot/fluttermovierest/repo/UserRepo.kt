@@ -10,5 +10,5 @@ import java.util.*
 interface UserRepo: JpaRepository<AppUser, Int> {
 
     @Query(value = "SELECT * FROM APP_USER WHERE email = ?1", nativeQuery = true)
-    fun retrieveUserByEmail(emailAddress: String): Optional<AppUser>
+    fun findByEmail(emailAddress: String): Optional<AppUser>
 }
