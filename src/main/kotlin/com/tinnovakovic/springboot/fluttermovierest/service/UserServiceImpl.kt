@@ -41,7 +41,7 @@ class UserServiceImpl(
     override fun createUser(restAppUser: RestAppUser): RestAppUser {
         return if (userRepo.findById(restAppUser.id).isEmpty) { //this check has to be done by email or username,
             // because the user will not provide a SQL id when creating an account
-            userRepo.save(
+            val appUser = userRepo.save(
                 AppUser(
                     id = -1,
                     username = restAppUser.username,
@@ -54,7 +54,7 @@ class UserServiceImpl(
                     favMovies = emptySet()
                 )
             )
-            restAppUser
+            restAppUser.copy(id = appUser.id)
         } else {
             throw IllegalArgumentException("A user with the 'email' ${restAppUser.email} already exists")
         }
