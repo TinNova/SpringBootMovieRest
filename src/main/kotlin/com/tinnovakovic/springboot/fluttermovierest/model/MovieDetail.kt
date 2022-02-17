@@ -40,10 +40,12 @@ data class MovieDetail(
     val voteCount: Int,
     @Column(name = "is_favourite")
     val isFavourite: Boolean,
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
+    @JoinColumn(name = "movie_detail_id")
+    val reviews: Set<Review>
 )
 
 //  Handle lists later
 //    val genres: List<MDBGenre> = listOf()
 //    val trailers: List<Trailer> =
 //    val actors: List<Actor> =
-//    val reviews: List<MDBReview> =

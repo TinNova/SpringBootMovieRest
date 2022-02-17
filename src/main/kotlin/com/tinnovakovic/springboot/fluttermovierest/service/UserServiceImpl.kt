@@ -58,7 +58,8 @@ class UserServiceImpl(
                     appUserDetail = AppUserDetail(
                         id = -1,
                         username = restAppUser.username,
-                        email = restAppUser.email
+                        email = restAppUser.email,
+                        reviews = emptySet()
                     ),
                     favMovies = emptySet()
                 )
@@ -97,16 +98,16 @@ class UserServiceImpl(
         }
     }
 
-    override fun saveMovie(id: Int, restMovie: RestMovie): RestMovie {
+    override fun saveMovie(userId: Int, restMovie: RestMovie): RestMovie {
         movieRepo.findById(restMovie.id).let { entityMovie ->
             if (entityMovie.isPresent) {
-                userRepo.findById(id).let { entityUser ->
+                userRepo.findById(userId).let { entityUser ->
                     return if (entityUser.isPresent) {
                         val userEntityMovies: Set<Movie> = entityUser.get().favMovies.plus(entityMovie.get())
                         userRepo.save(entityUser.get().copy(favMovies = userEntityMovies))
                         restMovie
                     } else {
-                        throw NoSuchElementException("Could not find a user with an 'id' of ${id}.")
+                        throw NoSuchElementException("Could not find a user with an 'id' of ${userId}.")
                     }
                 }
             } else {

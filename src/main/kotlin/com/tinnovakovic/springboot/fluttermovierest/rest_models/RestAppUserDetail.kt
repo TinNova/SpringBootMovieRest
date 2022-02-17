@@ -5,7 +5,7 @@ data class RestAppUserDetail(
     val username: String = "",
     val email: String = "",
     val favMovies: List<Int> = emptyList(),
+    val reviews: Set<Int> = emptySet()
 //    val favActors: List<Int> = emptyList(),
 //    val favDirectors: List<Int> = emptyList(),
-//    val reviews: List<Int> = emptyList()
 )

@@ -17,8 +17,10 @@ data class AppUserDetail (
     @Column(name = "username", nullable = false, columnDefinition = "TEXT")
     val username: String,
     @Column(name = "email", nullable = false, columnDefinition = "TEXT")
-    val email: String
+    val email: String,
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
+    @JoinColumn(name = "app_user_detail_id")
+    val reviews: Set<Review>
 )
 //    val favActors: List<Int>
 //    val favDirectors: List<Int>
-//    val reviews: List<Int>

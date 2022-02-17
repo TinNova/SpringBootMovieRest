@@ -39,7 +39,8 @@ class MovieServiceImpl(
                     tagline = it.get().tagline,
                     voteAverage = it.get().voteAverage,
                     voteCount = it.get().voteCount,
-                    isFavourite = it.get().isFavourite
+                    isFavourite = it.get().isFavourite,
+                    reviews = it.get().reviews.map { review -> review.id }.toSet()
                 )
             } else {
                 throw NoSuchElementException("Could not find a movie with an 'id' of $id.")
@@ -69,7 +70,8 @@ class MovieServiceImpl(
                         tagline = restMovieDetail.tagline,
                         voteAverage = restMovieDetail.voteAverage,
                         voteCount = restMovieDetail.voteCount,
-                        isFavourite = restMovieDetail.isFavourite
+                        isFavourite = restMovieDetail.isFavourite,
+                        reviews = emptySet()
                     ),
                     appUsers = emptySet()
                 )
@@ -80,6 +82,8 @@ class MovieServiceImpl(
         }
     }
 
+    // We don't want to updateMovies, at least we don't want this endpoint to be exposed to the Flutter app
+    // This is something only admin should be allowed to do
     override fun updateMovie(restMovieDetail: RestMovieDetail): RestMovieDetail {
         movieRepo.findById(restMovieDetail.id).let {
             return if (it.isPresent) {
@@ -103,7 +107,8 @@ class MovieServiceImpl(
                             tagline = restMovieDetail.tagline,
                             voteAverage = restMovieDetail.voteAverage,
                             voteCount = restMovieDetail.voteCount,
-                            isFavourite = restMovieDetail.isFavourite
+                            isFavourite = restMovieDetail.isFavourite,
+                            reviews = it.get().movieDetail.reviews
                         ),
                         appUsers = it.get().appUsers
                     )

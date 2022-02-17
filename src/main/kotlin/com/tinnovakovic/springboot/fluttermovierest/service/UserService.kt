@@ -10,5 +10,5 @@ interface UserService {
     fun createUser(restAppUser: RestAppUser): RestAppUser
 //    fun updateUser(restAppUser: RestAppUser): RestAppUser
     fun deleteUser(id: Int): Unit
-    fun saveMovie(id: Int, restMovie: RestMovie): RestMovie
+    fun saveMovie(userId: Int, restMovie: RestMovie): RestMovie
 }

@@ -27,9 +27,9 @@ class UserController(private val service: UserService) {
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: Int): RestAppUser = service.getUser(id)
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    fun saveMovie(@PathVariable id: Int, @RequestBody restMovie: RestMovie): RestMovie = service.saveMovie(id, restMovie)
+    fun saveMovie(@PathVariable userId: Int, @RequestBody restMovie: RestMovie): RestMovie = service.saveMovie(userId, restMovie)
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
