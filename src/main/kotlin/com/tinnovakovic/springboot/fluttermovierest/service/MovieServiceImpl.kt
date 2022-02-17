@@ -47,12 +47,8 @@ class MovieServiceImpl(
         }
     }
 
-    /**
-     * Movies can only be created by an Admin, not a user, so it's ok to use the SQL Movie model because the
-     * admin needs to populate the MovieDetail at the same time that they create a Movie
-     */
     override fun createMovie(restMovieDetail: RestMovieDetail): RestMovie {
-        return if (movieRepo.findById(restMovieDetail.id).isEmpty) { // doesn't make sense to use id as an id is created by SQL, so check against MdbId
+        return if (movieRepo.findByMdbId(restMovieDetail.mDbId).isEmpty) {
             val movie = movieRepo.save(
                 Movie(
                     id = -1,
@@ -80,7 +76,7 @@ class MovieServiceImpl(
             )
             RestMovie(id = movie.id, mDbId = movie.mDbId, posterPath = movie.posterPath)
         } else {
-            throw IllegalArgumentException("A movie with the 'id' ${restMovieDetail.id} already exists")
+            throw IllegalArgumentException("A movie with a 'mDbId' of ${restMovieDetail.mDbId} already exists")
         }
     }
 
