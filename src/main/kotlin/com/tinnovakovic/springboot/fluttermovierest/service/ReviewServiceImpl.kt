@@ -73,4 +73,8 @@ class ReviewServiceImpl(
             }
         }
     }
+
+    override fun findByIds(ids: List<Int>): List<RestReview> {
+        return reviewRepo.findAllById(ids).map { RestReview(id = it.id, comment = it.comment, rating = it.rating) }
+    }
 }

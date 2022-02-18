@@ -33,4 +33,7 @@ class ReviewController(private val service: ReviewService) {
     @PatchMapping("/")
     fun updateUser(@RequestBody restReview: RestReview): RestReview = service.updateReview(restReview)
 
+    @GetMapping("/")
+    fun findByIds(@RequestBody ids: List<Int>): List<RestReview> = service.findByIds(ids)
+
 }
