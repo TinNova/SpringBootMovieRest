@@ -50,4 +50,12 @@ class ReviewServiceImpl(
             throw IllegalArgumentException("A review for MovieDetail with id $movieDetailId by userDetail with id $userDetailId already exists")
         }
     }
+
+    override fun deleteReview(reviewId: Int) {
+        if (reviewRepo.findById(reviewId).isPresent) {
+            reviewRepo.deleteById(reviewId)
+        } else {
+            throw NoSuchElementException("Could not find a review with an 'id' of ${reviewId}.")
+        }
+    }
 }

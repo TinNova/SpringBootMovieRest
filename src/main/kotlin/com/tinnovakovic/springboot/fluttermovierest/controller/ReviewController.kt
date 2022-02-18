@@ -25,4 +25,7 @@ class ReviewController(private val service: ReviewService) {
         @PathVariable("movieDetailId") movieDetailId: Int,
         @RequestBody restReview: RestReview): RestReview = service.createReview(userDetailId, movieDetailId, restReview)
 
+    @DeleteMapping("/{reviewId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteUser(@PathVariable reviewId: Int): Unit = service.deleteReview(reviewId)
 }
