@@ -52,7 +52,7 @@ class MovieServiceImpl(
         return if (movieRepo.findByMdbId(restMovieDetail.mDbId).isEmpty) {
             val movie = movieRepo.save(
                 Movie(
-                    id = -1,
+                    id = restMovieDetail.id,
                     mDbId = restMovieDetail.mDbId,
                     posterPath = restMovieDetail.posterPath,
                     movieDetail = MovieDetail(
