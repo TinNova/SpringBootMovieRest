@@ -23,9 +23,14 @@ class ReviewController(private val service: ReviewService) {
     fun addReview(
         @PathVariable("userDetailId") userDetailId: Int,
         @PathVariable("movieDetailId") movieDetailId: Int,
-        @RequestBody restReview: RestReview): RestReview = service.createReview(userDetailId, movieDetailId, restReview)
+        @RequestBody restReview: RestReview
+    ): RestReview = service.createReview(userDetailId, movieDetailId, restReview)
 
     @DeleteMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteUser(@PathVariable reviewId: Int): Unit = service.deleteReview(reviewId)
+
+    @PatchMapping("/")
+    fun updateUser(@RequestBody restReview: RestReview): RestReview = service.updateReview(restReview)
+
 }

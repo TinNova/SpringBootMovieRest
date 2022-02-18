@@ -33,8 +33,12 @@ class ReviewServiceImpl(
                     )
                 )
 
-                movieDetailRepo.save(movieDetailEntity.get().copy(reviews = movieDetailEntity.get().reviews.plus(entityReview)))
-                userDetailRepo.save(userDetailEntity.get().copy(reviews = userDetailEntity.get().reviews.plus(entityReview)))
+                movieDetailRepo.save(
+                    movieDetailEntity.get().copy(reviews = movieDetailEntity.get().reviews.plus(entityReview))
+                )
+                userDetailRepo.save(
+                    userDetailEntity.get().copy(reviews = userDetailEntity.get().reviews.plus(entityReview))
+                )
                 return restReview.copy(id = entityReview.id)
 
             } else {
@@ -56,6 +60,17 @@ class ReviewServiceImpl(
             reviewRepo.deleteById(reviewId)
         } else {
             throw NoSuchElementException("Could not find a review with an 'id' of ${reviewId}.")
+        }
+    }
+
+    override fun updateReview(restReview: RestReview): RestReview {
+        reviewRepo.findById(restReview.id).let {
+            return if (it.isPresent) {
+                reviewRepo.save(it.get().copy(comment = restReview.comment, rating = restReview.rating))
+                restReview
+            } else {
+                throw NoSuchElementException("Could not find a review with an 'id' of ${restReview.id}.")
+            }
         }
     }
 }
