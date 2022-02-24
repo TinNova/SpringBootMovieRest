@@ -40,7 +40,8 @@ class MovieServiceImpl(
                     voteAverage = it.get().voteAverage,
                     voteCount = it.get().voteCount,
                     isFavourite = it.get().isFavourite,
-                    reviews = it.get().reviews.map { review -> review.id }.toSet()
+                    reviews = it.get().reviews.map { review -> review.id }.toSet(), //do we want to return ids? Why not return what's required for the screen?
+                    actors = it.get().actors.map { actor -> actor.id }.toSet() //do we want to return ids? Why not return what's required for the screen?
                 )
             } else {
                 throw NoSuchElementException("Could not find a movie with an 'id' of $id.")
@@ -71,7 +72,8 @@ class MovieServiceImpl(
                         voteAverage = restMovieDetail.voteAverage,
                         voteCount = restMovieDetail.voteCount,
                         isFavourite = restMovieDetail.isFavourite,
-                        reviews = emptySet()
+                        reviews = emptySet(),
+                        actors = emptySet()
                     ),
                     appUsers = emptySet()
                 )
@@ -108,7 +110,8 @@ class MovieServiceImpl(
                             voteAverage = restMovieDetail.voteAverage,
                             voteCount = restMovieDetail.voteCount,
                             isFavourite = restMovieDetail.isFavourite,
-                            reviews = it.get().movieDetail.reviews
+                            reviews = it.get().movieDetail.reviews,
+                            actors = it.get().movieDetail.actors
                         ),
                         appUsers = it.get().appUsers
                     )

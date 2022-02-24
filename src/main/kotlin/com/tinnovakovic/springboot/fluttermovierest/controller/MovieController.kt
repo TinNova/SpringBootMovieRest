@@ -1,6 +1,5 @@
 package com.tinnovakovic.springboot.fluttermovierest.controller
 
-import com.tinnovakovic.springboot.fluttermovierest.model.Movie
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovieDetail
 import com.tinnovakovic.springboot.fluttermovierest.service.MovieService
@@ -30,7 +29,7 @@ class MovieController(private val service: MovieService) {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addMovie(@RequestBody restMovieDetail: RestMovieDetail): RestMovie = service.createMovie(restMovieDetail)
+    fun createMovie(@RequestBody restMovieDetail: RestMovieDetail): RestMovie = service.createMovie(restMovieDetail)
 
     @PatchMapping("/")
     fun updateMovie(@RequestBody restMovieDetail: RestMovieDetail): RestMovieDetail = service.updateMovie(restMovieDetail)

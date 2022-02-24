@@ -42,7 +42,17 @@ data class MovieDetail(
     val isFavourite: Boolean,
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "movie_detail_id")
-    val reviews: Set<Review>
+    val reviews: Set<Review>,
+    @ManyToMany(
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH]
+    )
+    @JoinTable(
+        name = "movie_actor",
+        joinColumns = [JoinColumn(name = "movie_id")],
+        inverseJoinColumns = [JoinColumn(name = "actor_id")]
+    )
+    val actors: Set<Actor>
 )
 
 //  Handle lists later
