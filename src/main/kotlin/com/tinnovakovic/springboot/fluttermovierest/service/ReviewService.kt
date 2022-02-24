@@ -8,5 +8,5 @@ interface ReviewService {
     fun createReview(userDetailId: Int, movieDetailId: Int, restReview: RestReview): RestReview
     fun deleteReview(reviewId: Int): Unit
     fun updateReview(restReview: RestReview): RestReview
-    fun findByIds(ids: List<Int>): List<RestReview>
+    fun findByIds(reviewIds: List<Int>): List<RestReview>
 }
