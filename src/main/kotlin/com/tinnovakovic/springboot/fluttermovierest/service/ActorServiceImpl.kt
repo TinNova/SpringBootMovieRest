@@ -43,9 +43,7 @@ class ActorServiceImpl(
     }
 
 
-    // get Actor
-    // get list of Movies connected to Actor and map to RestMovieCredit object
-    // map to RestActorDetail
+    // This cannot function until we first create a method to add an actor to a movie
     override fun getActorDetail(actorId: Int): RestActorDetail {
         val actor =  actorRepo.findById(actorId).get()
         val movieDetailIds = movieDetailRepo.findMovieIdsByActorId(actorId)

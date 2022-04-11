@@ -16,7 +16,7 @@ data class MovieDetail(
     val mDbId: String = "",
     @Column(name = "title")
     val title: String,
-    @Column(name = "overview")
+    @Column(name = "overview", length = 1000)
     val overview: String,
     @Column(name = "poster_path")
     val posterPath: String = "",

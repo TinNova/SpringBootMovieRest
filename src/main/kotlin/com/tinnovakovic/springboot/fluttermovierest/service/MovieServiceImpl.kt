@@ -84,6 +84,42 @@ class MovieServiceImpl(
         }
     }
 
+    override fun createMovies(restMovieDetails: List<RestMovieDetail>) {
+        restMovieDetails.forEach { restMovieDetail ->
+            if (movieRepo.findByMdbId(restMovieDetail.mDbId).isEmpty) {
+                movieRepo.save(
+                    Movie(
+                        id = restMovieDetail.id,
+                        mDbId = restMovieDetail.mDbId,
+                        posterPath = restMovieDetail.posterPath,
+                        movieDetail = MovieDetail(
+                            id = restMovieDetail.id,
+                            mDbId = restMovieDetail.mDbId,
+                            title = restMovieDetail.title,
+                            overview = restMovieDetail.overview,
+                            posterPath = restMovieDetail.posterPath,
+                            backdropPath = restMovieDetail.backdropPath,
+                            directors = restMovieDetail.directors,
+                            popularity = restMovieDetail.popularity,
+                            releaseDate = restMovieDetail.releaseDate,
+                            revenue = restMovieDetail.revenue,
+                            runtime = restMovieDetail.runtime,
+                            tagline = restMovieDetail.tagline,
+                            voteAverage = restMovieDetail.voteAverage,
+                            voteCount = restMovieDetail.voteCount,
+                            isFavourite = restMovieDetail.isFavourite,
+                            reviews = emptySet(),
+                            actors = emptySet()
+                        ),
+                        appUsers = emptySet()
+                    )
+                )
+            } else {
+                throw IllegalArgumentException("During Bulk Save Operation, a movie with a 'mDbId' of ${restMovieDetail.mDbId} already exists")
+            }
+        }
+    }
+
     // We don't want to updateMovies, at least we don't want this endpoint to be exposed to the Flutter app
     // This is something only admin should be allowed to do
     override fun updateMovie(restMovieDetail: RestMovieDetail): RestMovieDetail {
