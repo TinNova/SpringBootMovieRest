@@ -3,10 +3,7 @@ package com.tinnovakovic.springboot.fluttermovierest.service
 import com.tinnovakovic.springboot.fluttermovierest.model.Actor
 import com.tinnovakovic.springboot.fluttermovierest.repo.ActorRepo
 import com.tinnovakovic.springboot.fluttermovierest.repo.MovieDetailRepo
-import com.tinnovakovic.springboot.fluttermovierest.rest_models.CreateActor
-import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestActor
-import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestActorDetail
-import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovieCredit
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.*
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 
@@ -42,10 +39,30 @@ class ActorServiceImpl(
         }
     }
 
+    override fun bulkSaveActors(createActors: List<CreateActor>) {
+        createActors.forEach { createActor ->
+            if (actorRepo.findByActorMdbId(createActor.actorMdbId).isEmpty) {
+                actorRepo.save(
+                    Actor(
+                        id = createActor.id,
+                        actorMdbId = createActor.actorMdbId,
+                        name = createActor.name,
+                        profilePath = createActor.profilePath,
+                        biography = createActor.biography,
+                        movieDetails = emptySet()
+                    )
+                )
+            } else {
+
+                //This exception causes a crash, can we just log it instead
+//                throw IllegalArgumentException("During Bulk Save Operation, an actor with a 'mDbId' of ${createActor.actorMdbId} already exists")
+            }
+        }
+    }
 
     // This cannot function until we first create a method to add an actor to a movie
     override fun getActorDetail(actorId: Int): RestActorDetail {
-        val actor =  actorRepo.findById(actorId).get()
+        val actor = actorRepo.findById(actorId).get()
         val movieDetailIds = movieDetailRepo.findMovieIdsByActorId(actorId)
         val movieDetails = movieDetailRepo.findAllById(movieDetailIds)
 
@@ -54,11 +71,11 @@ class ActorServiceImpl(
             actorMdbId = actor.actorMdbId,
             biography = actor.biography,
             profilePath = actor.profilePath,
-            images = emptyList(), // need to set up images
+            images = null, // need to set up images
             restMovieCredits = movieDetails.map {
                 RestMovieCredit(
                     id = it.id,
-                    mDbId = it.mDbId,
+                    movieMDbId = it.mDbId,
                     posterPath = it.posterPath,
                     directors = emptyList(), // need to implement this?
                     genres = emptyList(), // look up how genres work in the api
@@ -66,15 +83,13 @@ class ActorServiceImpl(
                     releaseDate = it.releaseDate,
                     revenue = it.revenue,
                     isFavourite = it.isFavourite
-                ) }
+                )
+            }
         )
     }
-
-
 
     override fun getActors(actorIds: List<Int>): List<RestActor> {
         return actorRepo.findAllById(actorIds)
             .map { RestActor(id = it.id, actorMdbId = it.actorMdbId, name = it.name, profilePath = it.profilePath) }
     }
-
 }

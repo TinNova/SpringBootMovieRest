@@ -1,8 +1,8 @@
 package com.tinnovakovic.springboot.fluttermovierest.repo
 
 import com.tinnovakovic.springboot.fluttermovierest.mapper.MdbMapper
-import com.tinnovakovic.springboot.fluttermovierest.mdb_models.MdbMovieDetail
-import com.tinnovakovic.springboot.fluttermovierest.mdb_models.MdbMoviesResult
+import com.tinnovakovic.springboot.fluttermovierest.mdb_models.*
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.CreateActor
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovieDetail
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Repository
@@ -15,34 +15,60 @@ class BulkRepoImpl(private val mdbMapper: MdbMapper) : BulkRepo {
     private val apiKey: String? = null
 
     override fun bulkDownloadMovies(): List<RestMovieDetail> {
-        //Create a new RestTemplate and use getForObject to make a GET request
-        //to the server and return an instance of Quote representing the response
-        val mdbMovieResult: MdbMoviesResult? = RestTemplate().getForObject("https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=1", MdbMoviesResult::class.java)
+        val mdbMovieResult: MdbMoviesResult? = RestTemplate().getForObject(
+            "https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=1",
+            MdbMoviesResult::class.java
+        )
 
         val mdbMovieDetails: MutableList<MdbMovieDetail> = mutableListOf()
+
         mdbMovieResult!!.results.forEach { mdbMovie ->
 
-            val mdbMovieDetail: MdbMovieDetail? = RestTemplate().getForObject("https://api.themoviedb.org/3/movie/${mdbMovie.id}?api_key=${apiKey}&language=en-US", MdbMovieDetail::class.java)
+            val mdbMovieDetail: MdbMovieDetail? = RestTemplate().getForObject(
+                "https://api.themoviedb.org/3/movie/${mdbMovie.id}?api_key=${apiKey}&language=en-US",
+                MdbMovieDetail::class.java
+            )
             mdbMovieDetail?.let {
                 mdbMovieDetails.add(it)
             }
         }
 
-        //Print the response to the console
-        println(mdbMovieDetails)
-
-
-
-        return mdbMapper.mapToRestMovies(mdbMovieDetails)
-       // TODO("Not yet implemented")
+        return mdbMapper.mapToRestMovieDetails(mdbMovieDetails)
     }
 
-    override fun bulkDownloadActors() {
-       // TODO("Not yet implemented")
+    override fun bulkDownloadActors(restMovieDetails: List<RestMovieDetail>): List<CreateActor> {
+
+        val mdbActorDetails: MutableList<MdbActorDetail> = mutableListOf()
+        val mdbCast: MutableList<MdbCast> = mutableListOf()
+
+        restMovieDetails.forEach { restMovieDetail ->
+
+            val mdbCredit: MdbCredit? = RestTemplate().getForObject(
+                "https://api.themoviedb.org/3/movie/${restMovieDetail.mDbId}/credits?api_key=${apiKey}&language=en-US",
+                MdbCredit::class.java
+            )
+
+            mdbCredit?.let {
+                mdbCast.addAll(it.cast)
+            }
+        }
+
+        mdbCast.forEach { mdbCast ->
+            val mdbActorDetail: MdbActorDetail? = RestTemplate().getForObject(
+                "https://api.themoviedb.org/3/person/${mdbCast.id}?api_key=${apiKey}",
+                MdbActorDetail::class.java
+            )
+
+            mdbActorDetail?.let {
+                mdbActorDetails.add(it)
+            }
+        }
+
+        return mdbMapper.mapToCreateActors(mdbActorDetails)
     }
 
     override fun bulkDownloadReviews() {
-       // TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 
 

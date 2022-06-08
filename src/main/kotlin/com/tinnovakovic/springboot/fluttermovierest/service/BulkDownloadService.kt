@@ -2,5 +2,8 @@ package com.tinnovakovic.springboot.fluttermovierest.service
 
 interface BulkDownloadService {
 
-    fun bulkDownloadMovies()
+    /**
+     * bulkDownLoadData downloads Movies & Actors (cast) data, this populates the database
+     */
+    fun bulkDownloadData()
 }

@@ -84,7 +84,7 @@ class MovieServiceImpl(
         }
     }
 
-    override fun createMovies(restMovieDetails: List<RestMovieDetail>) {
+    override fun bulkSaveMovies(restMovieDetails: List<RestMovieDetail>) {
         restMovieDetails.forEach { restMovieDetail ->
             if (movieRepo.findByMdbId(restMovieDetail.mDbId).isEmpty) {
                 movieRepo.save(
@@ -115,7 +115,7 @@ class MovieServiceImpl(
                     )
                 )
             } else {
-                throw IllegalArgumentException("During Bulk Save Operation, a movie with a 'mDbId' of ${restMovieDetail.mDbId} already exists")
+//                throw IllegalArgumentException("During Bulk Save Operation, a movie with a 'mDbId' of ${restMovieDetail.mDbId} already exists")
             }
         }
     }

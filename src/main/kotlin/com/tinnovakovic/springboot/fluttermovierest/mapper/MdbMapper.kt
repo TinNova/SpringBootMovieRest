@@ -1,18 +1,20 @@
 package com.tinnovakovic.springboot.fluttermovierest.mapper
 
+import com.tinnovakovic.springboot.fluttermovierest.mdb_models.MdbActorDetail
 import com.tinnovakovic.springboot.fluttermovierest.mdb_models.MdbMovieDetail
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.CreateActor
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovieDetail
 import org.springframework.stereotype.Component
 
 @Component
 class MdbMapper {
 
-    fun mapToRestMovies(movieDetails: List<MdbMovieDetail>): List<RestMovieDetail> {
+    fun mapToRestMovieDetails(movieDetails: List<MdbMovieDetail>): List<RestMovieDetail> {
 
         return movieDetails.map {
             RestMovieDetail(
-                id = it.id,
-                mDbId = it.imdb_id ?: "",
+                id = 0,
+                mDbId = it.id.toString(),
                 title = it.title,
                 overview = it.overview,
                 posterPath = it.poster_path,
@@ -32,4 +34,19 @@ class MdbMapper {
         }
 
     }
+
+    fun mapToCreateActors(mdbCast: MutableList<MdbActorDetail>): List<CreateActor> {
+
+        return mdbCast.map {
+            CreateActor(
+                id = 0,
+                actorMdbId = it.id.toString(),
+                name = it.name,
+                profilePath = it.profile_path ?: "",
+                biography = it.biography, //missing from MdbCast
+                movieDetails = emptySet()
+            )
+        }
+    }
+
 }

@@ -5,6 +5,6 @@ data class RestActorDetail(
     val actorMdbId: String,
     val biography: String,
     val profilePath: String,
-    val images: List<String>,
+    val images: String?,
     val restMovieCredits: List<RestMovieCredit>
 )

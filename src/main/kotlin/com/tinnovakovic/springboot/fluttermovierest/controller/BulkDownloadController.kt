@@ -11,6 +11,6 @@ class BulkDownloadController(private val service: BulkDownloadService) {
 
     @GetMapping("/")
     fun bulkDownloadData() {
-        service.bulkDownloadMovies()
+        service.bulkDownloadData()
     }
 }
