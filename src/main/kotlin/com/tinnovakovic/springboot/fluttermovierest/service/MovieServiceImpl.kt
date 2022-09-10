@@ -20,7 +20,7 @@ class MovieServiceImpl(
         }
     }
 
-    private fun getMovies(): List<Movie> {
+    override fun getMovies(): List<Movie> {
         return movieRepo.findAll()
     }
 
@@ -79,7 +79,7 @@ class MovieServiceImpl(
                 voteCount = restMovieDetail.voteCount,
                 isFavourite = restMovieDetail.isFavourite,
                 reviews = emptySet(),
-                actors = emptySet()
+                actors = mutableSetOf()
             ),
             appUsers = emptySet()
         )
@@ -122,7 +122,7 @@ class MovieServiceImpl(
                             voteCount = restMovieDetail.voteCount,
                             isFavourite = restMovieDetail.isFavourite,
                             reviews = emptySet(),
-                            actors = emptySet()
+                            actors = mutableSetOf()
                         ),
                         appUsers = emptySet()
                     )
@@ -168,6 +168,17 @@ class MovieServiceImpl(
                 restMovieDetail
             } else {
                 throw NoSuchElementException("Could not find a movie with an 'id' of ${restMovieDetail.id}.")
+            }
+        }
+    }
+
+    override fun updateMovie(movie: Movie): Movie {
+        movieRepo.findById(movie.id).let {
+            return if (it.isPresent) {
+                movieRepo.save(movie
+                )
+            } else {
+                throw NoSuchElementException("Could not find a movie with an 'id' of ${movie.id}.")
             }
         }
     }

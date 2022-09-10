@@ -102,7 +102,7 @@ class ActorServiceImpl(
         }
     }
 
-    private fun getActors(actorIds: List<Int>): List<Actor> {
+    override fun getActors(actorIds: List<Int>): List<Actor> {
         return actorRepo.findAllById(actorIds)
     }
 }

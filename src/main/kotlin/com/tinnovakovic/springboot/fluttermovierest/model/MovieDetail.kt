@@ -52,8 +52,64 @@ data class MovieDetail(
         joinColumns = [JoinColumn(name = "movie_id")],
         inverseJoinColumns = [JoinColumn(name = "actor_id")]
     )
-    val actors: Set<Actor>
-)
+    val actors: MutableSet<Actor>
+) {
+
+    /**
+     * This is the fix for the recursion that happens between all ManyToMany relationships for example between MovieDetail and Actors
+     *
+     * Remember - You can remove the following methods in either Movie or AppUser for the same result
+     * Here the appUsers field was removed (but you could have also removed movies from the AppUser Data Class
+     * It doesn't matter from which side you do it (AppUser or Movie)
+     * */
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MovieDetail
+
+        if (id != other.id) return false
+        if (mDbId != other.mDbId) return false
+        if (title != other.title) return false
+        if (overview != other.overview) return false
+        if (posterPath != other.posterPath) return false
+        if (backdropPath != other.backdropPath) return false
+        if (directors != other.directors) return false
+        if (popularity != other.popularity) return false
+        if (releaseDate != other.releaseDate) return false
+        if (revenue != other.revenue) return false
+        if (runtime != other.runtime) return false
+        if (tagline != other.tagline) return false
+        if (voteAverage != other.voteAverage) return false
+        if (revenue != other.revenue) return false
+        if (voteCount != other.voteCount) return false
+        if (isFavourite != other.isFavourite) return false
+        if (reviews != other.reviews) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + mDbId.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + overview.hashCode()
+        result = 31 * result + posterPath.hashCode()
+        result = 31 * result + backdropPath.hashCode()
+        result = 31 * result + directors.hashCode()
+        result = 31 * result + releaseDate.hashCode()
+        result = 31 * result + revenue.hashCode()
+        result = 31 * result + runtime.hashCode()
+        result = 31 * result + tagline.hashCode()
+        result = 31 * result + voteAverage.hashCode()
+        result = 31 * result + revenue.hashCode()
+        result = 31 * result + voteCount.hashCode()
+        result = 31 * result + isFavourite.hashCode()
+        result = 31 * result + reviews.hashCode()
+        return result
+    }
+}
+
 
 //  Handle lists later
 //    val genres: List<MDBGenre> = listOf()
