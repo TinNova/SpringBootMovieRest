@@ -21,11 +21,11 @@ class UserController(private val service: UserService) {
         ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
 
     @GetMapping("/")
-    fun getUsers(): List<RestAppUser> = service.getUsers()
+    fun getUsers(): List<RestAppUser> = service.getRestAppUsers()
 
     // This pathVariable needs to be replaced with a username password authentication
     @GetMapping("/{id}")
-    fun getUser(@PathVariable id: Int): RestAppUser = service.getUser(id)
+    fun getUser(@PathVariable id: Int): RestAppUser = service.getRestAppUser(id)
 
     @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)

@@ -9,33 +9,36 @@ import java.lang.IllegalArgumentException
 
 @Service
 class ActorServiceImpl(
-    private val actorRepo: ActorRepo,
-    private val movieDetailRepo: MovieDetailRepo
+    private val actorRepo: ActorRepo, private val movieDetailRepo: MovieDetailRepo
 ) : ActorService {
 
     override fun createActor(createActor: CreateActor): RestActor {
-        return if (actorRepo.findByActorMdbId(createActor.actorMdbId).isEmpty) {
+        val actor = createActor(
+            Actor(
+                id = createActor.id,
+                actorMdbId = createActor.actorMdbId,
+                name = createActor.name,
+                profilePath = createActor.profilePath,
+                biography = createActor.biography,
+                movieDetails = emptySet()
+            )
+        )
 
+        return RestActor(
+            id = actor.id,
+            actorMdbId = actor.actorMdbId,
+            profilePath = actor.profilePath,
+            name = actor.name
+        )
+    }
+
+    private fun createActor(actor: Actor): Actor {
+        return if (actorRepo.findByActorMdbId(actor.actorMdbId).isEmpty) {
             // Add the correct checks here to make sure we're not saving an actor that already exists ect...
-            val actor = actorRepo.save(
-                Actor(
-                    id = createActor.id,
-                    actorMdbId = createActor.actorMdbId,
-                    name = createActor.name,
-                    profilePath = createActor.profilePath,
-                    biography = createActor.biography,
-                    movieDetails = emptySet()
-                )
-            )
+            actorRepo.save(actor)
 
-            RestActor(
-                id = actor.id,
-                actorMdbId = actor.actorMdbId,
-                profilePath = actor.profilePath,
-                name = actor.name
-            )
         } else {
-            throw IllegalArgumentException("An actor with an 'actorMdbId' of ${createActor.actorMdbId} already exists")
+            throw IllegalArgumentException("An actor with an 'actorMdbId' of ${actor.actorMdbId} already exists")
         }
     }
 
@@ -60,36 +63,46 @@ class ActorServiceImpl(
         }
     }
 
-    // This cannot function until we first create a method to add an actor to a movie
-    override fun getActorDetail(actorId: Int): RestActorDetail {
-        val actor = actorRepo.findById(actorId).get()
-        val movieDetailIds = movieDetailRepo.findMovieIdsByActorId(actorId)
-        val movieDetails = movieDetailRepo.findAllById(movieDetailIds)
-
-        return RestActorDetail(
-            id = actor.id,
-            actorMdbId = actor.actorMdbId,
-            biography = actor.biography,
-            profilePath = actor.profilePath,
-            images = null, // need to set up images
-            restMovieCredits = movieDetails.map {
-                RestMovieCredit(
-                    id = it.id,
-                    movieMDbId = it.mDbId,
-                    posterPath = it.posterPath,
-                    directors = emptyList(), // need to implement this?
-                    genres = emptyList(), // look up how genres work in the api
-                    popularity = it.popularity,
-                    releaseDate = it.releaseDate,
-                    revenue = it.revenue,
-                    isFavourite = it.isFavourite
-                )
-            }
-        )
+    override fun getRestActorDetail(actorId: Int): RestActorDetail {
+        return getActorDetail(actorId).let { actor ->
+            RestActorDetail(id = actor.id,
+                actorMdbId = actor.actorMdbId,
+                biography = actor.biography,
+                profilePath = actor.profilePath,
+                images = null, // need to set up images
+                restMovieCredits = actor.movieDetails.map {
+                    RestMovieCredit(
+                        id = it.id,
+                        movieMDbId = it.mDbId,
+                        posterPath = it.posterPath,
+                        directors = emptyList(), // need to implement this?
+                        genres = emptyList(), // look up how genres work in the api
+                        popularity = it.popularity,
+                        releaseDate = it.releaseDate,
+                        revenue = it.revenue,
+                        isFavourite = it.isFavourite
+                    )
+                })
+        }
     }
 
-    override fun getActors(actorIds: List<Int>): List<RestActor> {
+    // This cannot function until we first create a method to add an actor to a movie
+    private fun getActorDetail(actorId: Int): Actor {
+        return actorRepo.findById(actorId).get()
+    }
+
+    override fun getRestActors(actorIds: List<Int>): List<RestActor> {
+        return getActors(actorIds).map {
+            RestActor(
+                id = it.id,
+                actorMdbId = it.actorMdbId,
+                name = it.name,
+                profilePath = it.profilePath
+            )
+        }
+    }
+
+    private fun getActors(actorIds: List<Int>): List<Actor> {
         return actorRepo.findAllById(actorIds)
-            .map { RestActor(id = it.id, actorMdbId = it.actorMdbId, name = it.name, profilePath = it.profilePath) }
     }
 }

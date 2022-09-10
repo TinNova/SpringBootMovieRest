@@ -11,76 +11,89 @@ import java.lang.IllegalArgumentException
 
 @Service
 class MovieServiceImpl(
-    private val movieRepo: MovieRepo,
-    private val movieDetailRepo: MovieDetailRepo
+    private val movieRepo: MovieRepo, private val movieDetailRepo: MovieDetailRepo
 ) : MovieService {
 
-    override fun getMovies(): List<RestMovie> {
-        return movieRepo.findAll().map {
+    override fun getRestMovies(): List<RestMovie> {
+        return getMovies().map {
             RestMovie(id = it.id, mDbId = it.mDbId, posterPath = it.posterPath)
         }
     }
 
-    override fun getMovie(id: Int): RestMovieDetail {
+    private fun getMovies(): List<Movie> {
+        return movieRepo.findAll()
+    }
+
+    override fun getRestMovie(id: Int): RestMovieDetail {
+        return getMovie(id).let { movieDetail ->
+            RestMovieDetail(
+                id = movieDetail.id,
+                mDbId = movieDetail.mDbId,
+                title = movieDetail.title,
+                overview = movieDetail.overview,
+                posterPath = movieDetail.posterPath,
+                backdropPath = movieDetail.backdropPath,
+                directors = movieDetail.directors,
+                popularity = movieDetail.popularity,
+                releaseDate = movieDetail.releaseDate,
+                revenue = movieDetail.revenue,
+                runtime = movieDetail.runtime,
+                tagline = movieDetail.tagline,
+                voteAverage = movieDetail.voteAverage,
+                voteCount = movieDetail.voteCount,
+                isFavourite = movieDetail.isFavourite,
+                reviews = movieDetail.reviews.map { review -> review.id }
+                    .toSet(), //do we want to return ids? Why not return what's required for the screen?
+                actors = movieDetail.actors.map { actor -> actor.id }
+                    .toSet() //do we want to return ids? Why not return what's required for the screen?
+            )
+        }
+    }
+
+    private fun getMovie(id: Int): MovieDetail {
         movieDetailRepo.findById(id).let {
-            return if (it.isPresent) {
-                RestMovieDetail(
-                    id = it.get().id,
-                    mDbId = it.get().mDbId,
-                    title = it.get().title,
-                    overview = it.get().overview,
-                    posterPath = it.get().posterPath,
-                    backdropPath = it.get().backdropPath,
-                    directors = it.get().directors,
-                    popularity = it.get().popularity,
-                    releaseDate = it.get().releaseDate,
-                    revenue = it.get().revenue,
-                    runtime = it.get().runtime,
-                    tagline = it.get().tagline,
-                    voteAverage = it.get().voteAverage,
-                    voteCount = it.get().voteCount,
-                    isFavourite = it.get().isFavourite,
-                    reviews = it.get().reviews.map { review -> review.id }.toSet(), //do we want to return ids? Why not return what's required for the screen?
-                    actors = it.get().actors.map { actor -> actor.id }.toSet() //do we want to return ids? Why not return what's required for the screen?
-                )
-            } else {
-                throw NoSuchElementException("Could not find a movie with an 'id' of $id.")
-            }
+            return if (it.isPresent) it.get()
+            else throw NoSuchElementException("Could not find a movie with an 'id' of $id.")
         }
     }
 
     override fun createMovie(restMovieDetail: RestMovieDetail): RestMovie {
-        return if (movieRepo.findByMdbId(restMovieDetail.mDbId).isEmpty) {
-            val movie = movieRepo.save(
-                Movie(
-                    id = restMovieDetail.id,
-                    mDbId = restMovieDetail.mDbId,
-                    posterPath = restMovieDetail.posterPath,
-                    movieDetail = MovieDetail(
-                        id = restMovieDetail.id,
-                        mDbId = restMovieDetail.mDbId,
-                        title = restMovieDetail.title,
-                        overview = restMovieDetail.overview,
-                        posterPath = restMovieDetail.posterPath,
-                        backdropPath = restMovieDetail.backdropPath,
-                        directors = restMovieDetail.directors,
-                        popularity = restMovieDetail.popularity,
-                        releaseDate = restMovieDetail.releaseDate,
-                        revenue = restMovieDetail.revenue,
-                        runtime = restMovieDetail.runtime,
-                        tagline = restMovieDetail.tagline,
-                        voteAverage = restMovieDetail.voteAverage,
-                        voteCount = restMovieDetail.voteCount,
-                        isFavourite = restMovieDetail.isFavourite,
-                        reviews = emptySet(),
-                        actors = emptySet()
-                    ),
-                    appUsers = emptySet()
-                )
-            )
-            RestMovie(id = movie.id, mDbId = movie.mDbId, posterPath = movie.posterPath)
+        val movie = Movie(
+            id = restMovieDetail.id,
+            mDbId = restMovieDetail.mDbId,
+            posterPath = restMovieDetail.posterPath,
+            movieDetail = MovieDetail(
+                id = restMovieDetail.id,
+                mDbId = restMovieDetail.mDbId,
+                title = restMovieDetail.title,
+                overview = restMovieDetail.overview,
+                posterPath = restMovieDetail.posterPath,
+                backdropPath = restMovieDetail.backdropPath,
+                directors = restMovieDetail.directors,
+                popularity = restMovieDetail.popularity,
+                releaseDate = restMovieDetail.releaseDate,
+                revenue = restMovieDetail.revenue,
+                runtime = restMovieDetail.runtime,
+                tagline = restMovieDetail.tagline,
+                voteAverage = restMovieDetail.voteAverage,
+                voteCount = restMovieDetail.voteCount,
+                isFavourite = restMovieDetail.isFavourite,
+                reviews = emptySet(),
+                actors = emptySet()
+            ),
+            appUsers = emptySet()
+        )
+
+        val savedMovie = createMovie(movie)
+        return RestMovie(id = savedMovie.id, mDbId = savedMovie.mDbId, posterPath = savedMovie.posterPath)
+    }
+
+
+    private fun createMovie(movie: Movie): Movie {
+        if (movieRepo.findByMdbId(movie.mDbId).isEmpty) {
+            return movieRepo.save(movie)
         } else {
-            throw IllegalArgumentException("A movie with a 'mDbId' of ${restMovieDetail.mDbId} already exists")
+            throw IllegalArgumentException("A movie with a 'mDbId' of ${movie.mDbId} already exists")
         }
     }
 

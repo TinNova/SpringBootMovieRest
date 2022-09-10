@@ -22,10 +22,10 @@ class MovieController(private val service: MovieService) {
         ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
 
     @GetMapping("/")
-    fun getMovies(): List<RestMovie> = service.getMovies()
+    fun getMovies(): List<RestMovie> = service.getRestMovies()
 
     @GetMapping("/{id}")
-    fun getMovie(@PathVariable id: Int): RestMovieDetail = service.getMovie(id)
+    fun getMovie(@PathVariable id: Int): RestMovieDetail = service.getRestMovie(id)
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)

@@ -7,7 +7,7 @@ import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestActorDetail
 interface ActorService {
 
     fun createActor(createActor: CreateActor): RestActor
-    fun getActorDetail(actorId: Int): RestActorDetail
-    fun getActors(actorIds: List<Int>): List<RestActor>
+    fun getRestActorDetail(actorId: Int): RestActorDetail
+    fun getRestActors(actorIds: List<Int>): List<RestActor>
     fun bulkSaveActors(createActors: List<CreateActor>)
 }

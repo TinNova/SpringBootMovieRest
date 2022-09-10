@@ -20,9 +20,20 @@ class UserServiceImpl(
     private val movieDetailRepo: MovieDetailRepo
 ) : UserService {
 
+    override fun getRestAppUsers(): List<RestAppUser> {
+        return getUsers().map {
+            RestAppUser(
+                id = it.id, username = it.username, email = it.email, movies = it.favMovies.map { it.id }.toMutableSet()
+            )
+        }
+    }
+
     // to return movieIds you need to query the app_user_movie table, but we only want to do this in AppUserDetail
-    override fun getUsers(): List<RestAppUser> {
-        return userRepo.findAll().map {
+    private fun getUsers(): List<AppUser> = userRepo.findAll()
+
+    //    override fun getUser(id: Int): RestAppUser {
+    override fun getRestAppUser(id: Int): RestAppUser {
+        return getAppUser(id).let {
             RestAppUser(
                 id = it.id,
                 username = it.username,
@@ -33,15 +44,10 @@ class UserServiceImpl(
     }
 
     // to return movieIds you need to query the app_user_movie table, but we only want to do this in AppUserDetail
-    override fun getUser(id: Int): RestAppUser {
+    private fun getAppUser(id: Int): AppUser {
         userRepo.findById(id).let {
             return if (it.isPresent) {
-                RestAppUser(
-                    id = it.get().id,
-                    username = it.get().username,
-                    email = it.get().email,
-                    movies = it.get().favMovies.map { it.id }.toMutableSet()
-                )
+                it.get()
             } else {
                 throw NoSuchElementException("Could not find a user with an id of $id.")
             }
@@ -49,24 +55,22 @@ class UserServiceImpl(
     }
 
     override fun createUser(restAppUser: RestAppUser): RestAppUser {
-        return if (userRepo.findByEmail(restAppUser.email).isEmpty) {
-            val appUser = userRepo.save(
-                AppUser(
-                    id = -1,
-                    username = restAppUser.username,
-                    email = restAppUser.email,
-                    appUserDetail = AppUserDetail(
-                        id = -1,
-                        username = restAppUser.username,
-                        email = restAppUser.email,
-                        reviews = emptySet()
-                    ),
-                    favMovies = emptySet()
-                )
+        return createUser(
+            AppUser(
+                id = -1, username = restAppUser.username, email = restAppUser.email, appUserDetail = AppUserDetail(
+                    id = -1, username = restAppUser.username, email = restAppUser.email, reviews = emptySet()
+                ), favMovies = emptySet()
             )
-            restAppUser.copy(id = appUser.id)
+        ).let {
+            restAppUser.copy(id = it.id)
+        }
+    }
+
+    private fun createUser(appUser: AppUser): AppUser {
+        return if (userRepo.findByEmail(appUser.email).isEmpty) {
+            userRepo.save(appUser)
         } else {
-            throw IllegalArgumentException("A user with the 'email' ${restAppUser.email} already exists")
+            throw IllegalArgumentException("A user with the 'email' ${appUser.email} already exists")
         }
     }
 

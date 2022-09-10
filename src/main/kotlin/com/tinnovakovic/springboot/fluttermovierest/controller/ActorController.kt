@@ -26,9 +26,9 @@ class ActorController(private val service: ActorService) {
     fun createActor(@RequestBody createActor: CreateActor): RestActor = service.createActor(createActor)
 
     @GetMapping("/{actorId}")
-    fun getActorDetail(@PathVariable actorId: Int): RestActorDetail = service.getActorDetail(actorId) // do we want to return RestActor or RestActorDetail?
+    fun getActorDetail(@PathVariable actorId: Int): RestActorDetail = service.getRestActorDetail(actorId) // do we want to return RestActor or RestActorDetail?
 
     @GetMapping("/")
-    fun getActors(@RequestBody actorIds: List<Int>): List<RestActor> = service.getActors(actorIds) // do we want to return RestActor or RestActorDetail?
+    fun getActors(@RequestBody actorIds: List<Int>): List<RestActor> = service.getRestActors(actorIds) // do we want to return RestActor or RestActorDetail?
 
 }

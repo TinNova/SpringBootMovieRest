@@ -5,8 +5,8 @@ import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 
 interface UserService {
 
-    fun getUsers(): List<RestAppUser>
-    fun getUser(id: Int): RestAppUser
+    fun getRestAppUsers(): List<RestAppUser>
+    fun getRestAppUser(id: Int): RestAppUser
     fun createUser(restAppUser: RestAppUser): RestAppUser
 //    fun updateUser(restAppUser: RestAppUser): RestAppUser
     fun deleteUser(id: Int): Unit
