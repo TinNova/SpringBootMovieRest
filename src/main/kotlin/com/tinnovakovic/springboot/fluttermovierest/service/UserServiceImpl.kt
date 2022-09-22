@@ -1,14 +1,14 @@
 package com.tinnovakovic.springboot.fluttermovierest.service
 
-import com.tinnovakovic.springboot.fluttermovierest.repo.MovieRepo
-import com.tinnovakovic.springboot.fluttermovierest.repo.UserRepo
+import com.tinnovakovic.springboot.fluttermovierest.model.Actor
 import com.tinnovakovic.springboot.fluttermovierest.model.AppUser
 import com.tinnovakovic.springboot.fluttermovierest.model.AppUserDetail
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
-import com.tinnovakovic.springboot.fluttermovierest.repo.AppUserDetailRepo
-import com.tinnovakovic.springboot.fluttermovierest.repo.MovieDetailRepo
+import com.tinnovakovic.springboot.fluttermovierest.repo.*
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestActor
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestAppUser
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestSaveActor
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 
@@ -17,13 +17,18 @@ class UserServiceImpl(
     private val userRepo: UserRepo,
     private val userDetailRepo: AppUserDetailRepo,
     private val movieRepo: MovieRepo,
-    private val movieDetailRepo: MovieDetailRepo
+    private val movieDetailRepo: MovieDetailRepo,
+    private val actorRepo: ActorRepo
 ) : UserService {
 
     override fun getRestAppUsers(): List<RestAppUser> {
         return getUsers().map {
             RestAppUser(
-                id = it.id, username = it.username, email = it.email, movies = it.favMovies.map { it.id }.toMutableSet()
+                id = it.id,
+                username = it.username,
+                email = it.email,
+                movies = it.favMovies.map { it.id }.toSet(),
+                actors = it.favActors.map { it.id }.toSet(),
             )
         }
     }
@@ -59,7 +64,7 @@ class UserServiceImpl(
             AppUser(
                 id = -1, username = restAppUser.username, email = restAppUser.email, appUserDetail = AppUserDetail(
                     id = -1, username = restAppUser.username, email = restAppUser.email, reviews = emptySet()
-                ), favMovies = emptySet()
+                ), favMovies = emptySet(), favActors = emptySet()
             )
         ).let {
             restAppUser.copy(id = it.id)
@@ -116,6 +121,24 @@ class UserServiceImpl(
                 }
             } else {
                 throw NoSuchElementException("Could not find a movie with an 'id' of ${restMovie.id}.")
+            }
+        }
+    }
+
+    override fun saveActor(userId: Int, actor: RestSaveActor): Boolean {
+        actorRepo.findById(actor.id).let { entityActor ->
+            if (entityActor.isPresent) {
+                userRepo.findById(userId).let { entityUser ->
+                    return if (entityUser.isPresent) {
+                        val userEntityActors: Set<Actor> = entityUser.get().favActors.plus(entityActor.get())
+                        userRepo.save(entityUser.get().copy(favActors = userEntityActors))
+                        true
+                    } else {
+                        throw NoSuchElementException("Could not find a user with an 'id' of ${userId}.")
+                    }
+                }
+            } else {
+                throw NoSuchElementException("Could not find an actor with an 'id' of ${actor.id}.")
             }
         }
     }

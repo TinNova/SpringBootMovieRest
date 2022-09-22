@@ -2,6 +2,7 @@ package com.tinnovakovic.springboot.fluttermovierest.controller
 
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestAppUser
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestSaveActor
 import com.tinnovakovic.springboot.fluttermovierest.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -29,7 +30,13 @@ class UserController(private val service: UserService) {
 
     @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    fun saveMovie(@PathVariable userId: Int, @RequestBody restMovie: RestMovie): RestMovie = service.saveMovie(userId, restMovie)
+    fun saveMovie(@PathVariable userId: Int, @RequestBody restMovie: RestMovie): RestMovie =
+        service.saveMovie(userId, restMovie)
+
+    @PatchMapping("/{userId}/saveactor")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun saveMovie(@PathVariable userId: Int, @RequestBody restSaveActor: RestSaveActor): Boolean =
+        service.saveActor(userId, restSaveActor)
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)

@@ -20,7 +20,8 @@ class ActorServiceImpl(
                 name = createActor.name,
                 profilePath = createActor.profilePath,
                 biography = createActor.biography,
-                movieDetails = emptySet()
+                movieDetails = emptySet(),
+                appUsers = emptySet()
             )
         )
 
@@ -52,7 +53,8 @@ class ActorServiceImpl(
                         name = createActor.name,
                         profilePath = createActor.profilePath,
                         biography = createActor.biography,
-                        movieDetails = emptySet()
+                        movieDetails = emptySet(),
+                        appUsers = emptySet()
                     )
                 )
             } else {

@@ -30,5 +30,15 @@ data class AppUser(
         joinColumns = [JoinColumn(name = "appUser_id")],
         inverseJoinColumns = [JoinColumn(name = "movie_id")]
     )
-    val favMovies: Set<Movie>
+    val favMovies: Set<Movie>,
+    @ManyToMany(
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH]
+    )
+    @JoinTable(
+        name = "appUser_actor",
+        joinColumns = [JoinColumn(name = "appUser_id")],
+        inverseJoinColumns = [JoinColumn(name = "actor_id")]
+    )
+    val favActors: Set<Actor>
 )
