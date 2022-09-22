@@ -5,10 +5,7 @@ import com.tinnovakovic.springboot.fluttermovierest.model.AppUser
 import com.tinnovakovic.springboot.fluttermovierest.model.AppUserDetail
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
 import com.tinnovakovic.springboot.fluttermovierest.repo.*
-import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestActor
-import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestAppUser
-import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
-import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestSaveActor
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.*
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 
@@ -107,20 +104,20 @@ class UserServiceImpl(
         }
     }
 
-    override fun saveMovie(userId: Int, restMovie: RestMovie): RestMovie {
-        movieRepo.findById(restMovie.id).let { entityMovie ->
+    override fun saveMovie(userId: Int, movie: RestSaveMovie): Boolean {
+        movieRepo.findById(movie.id).let { entityMovie ->
             if (entityMovie.isPresent) {
                 userRepo.findById(userId).let { entityUser ->
                     return if (entityUser.isPresent) {
                         val userEntityMovies: Set<Movie> = entityUser.get().favMovies.plus(entityMovie.get())
                         userRepo.save(entityUser.get().copy(favMovies = userEntityMovies))
-                        restMovie
+                        true
                     } else {
                         throw NoSuchElementException("Could not find a user with an 'id' of ${userId}.")
                     }
                 }
             } else {
-                throw NoSuchElementException("Could not find a movie with an 'id' of ${restMovie.id}.")
+                throw NoSuchElementException("Could not find a movie with an 'id' of ${movie.id}.")
             }
         }
     }
