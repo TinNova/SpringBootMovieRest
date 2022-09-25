@@ -1,13 +1,15 @@
 package com.tinnovakovic.springboot.fluttermovierest.mdb_models
 
+import java.math.BigDecimal
+
 data class MdbMovieDetail(
+    val id: Int = 0,
     val adult: Boolean = false,
     val backdrop_path: String = "",
     val belongsToCollection: Any = Any(), //belongs_to_collection
-    val budget: Int = 0,
+    val budget: Long = 0,
     val genres: List<Genre> = listOf(),
     val homepage: String = "",
-    val id: Int = 0,
     val imdb_id: String? = "",
     val original_language: String = "",
     val original_title: String = "",
@@ -17,7 +19,7 @@ data class MdbMovieDetail(
     val production_companies: List<ProductionCompany> = listOf(),
     val production_countries: List<ProductionCountry> = listOf(),
     val release_date: String = "",
-    val revenue: Int = 0,
+    val revenue: Long = 0,
     val runtime: Int = 0,
     val spoken_languages: List<SpokenLanguage> = listOf(),
     val status: String = "",

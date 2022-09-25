@@ -4,6 +4,7 @@ import com.tinnovakovic.springboot.fluttermovierest.mapper.MdbMapper
 import com.tinnovakovic.springboot.fluttermovierest.mdb_models.*
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.CreateActor
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovieDetail
+import org.apache.commons.logging.Log
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate
@@ -19,6 +20,7 @@ class BulkRepoImpl(private val mdbMapper: MdbMapper) : BulkRepo {
             "https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=1",
             MdbMoviesResult::class.java
         )
+        println("TIN Apikey: ${apiKey}")
 
         val mdbMovieDetails: MutableList<MdbMovieDetail> = mutableListOf()
 
@@ -28,6 +30,12 @@ class BulkRepoImpl(private val mdbMapper: MdbMapper) : BulkRepo {
                 "https://api.themoviedb.org/3/movie/${mdbMovie.id}?api_key=${apiKey}&language=en-US",
                 MdbMovieDetail::class.java
             )
+
+            println("TIN mdbMovie Id: ${mdbMovie.id}")
+            println("TIN mdbMovieDetail Budget: ${mdbMovieDetail?.budget}")
+            println("TIN mdbMovieDetail Revenue: ${mdbMovieDetail?.revenue}")
+            println("TIN mdbMovieDetail Revenue: ${mdbMovieDetail?.runtime}")
+
             mdbMovieDetail?.let {
                 mdbMovieDetails.add(it)
             }
