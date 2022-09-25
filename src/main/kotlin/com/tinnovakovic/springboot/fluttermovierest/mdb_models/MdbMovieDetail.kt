@@ -1,7 +1,5 @@
 package com.tinnovakovic.springboot.fluttermovierest.mdb_models
 
-import java.math.BigDecimal
-
 data class MdbMovieDetail(
     val id: Int = 0,
     val adult: Boolean = false,

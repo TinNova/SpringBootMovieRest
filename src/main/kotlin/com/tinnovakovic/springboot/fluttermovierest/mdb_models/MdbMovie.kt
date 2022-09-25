@@ -9,7 +9,7 @@ data class MdbMoviesResult(
 
 data class MdbMovie(
     val vote_count: Int = 0,
-    val id: Int = 0,
+    val id: Long = 0,
     val video: Boolean = false,
     val vote_average: Double = 0.0,
     val title: String = "",

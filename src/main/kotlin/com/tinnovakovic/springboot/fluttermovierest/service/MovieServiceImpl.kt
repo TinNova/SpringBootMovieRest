@@ -4,6 +4,8 @@ import com.tinnovakovic.springboot.fluttermovierest.repo.MovieRepo
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
 import com.tinnovakovic.springboot.fluttermovierest.model.MovieDetail
 import com.tinnovakovic.springboot.fluttermovierest.repo.MovieDetailRepo
+import com.tinnovakovic.springboot.fluttermovierest.repo.UserRepo
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestAppUser
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovieDetail
 import org.springframework.stereotype.Service
@@ -11,7 +13,9 @@ import java.lang.IllegalArgumentException
 
 @Service
 class MovieServiceImpl(
-    private val movieRepo: MovieRepo, private val movieDetailRepo: MovieDetailRepo
+    private val movieRepo: MovieRepo,
+    private val movieDetailRepo: MovieDetailRepo,
+    private val service: UserService
 ) : MovieService {
 
     override fun getRestMovies(): List<RestMovie> {
@@ -56,6 +60,38 @@ class MovieServiceImpl(
             else throw NoSuchElementException("Could not find a movie with an 'id' of $id.")
         }
     }
+
+    //this should be in a helper class instead of in the ServiceImpl
+    // UserService Should not be in this clas
+    override fun getFavouriteMovies(userId: Int): List<RestMovieDetail> {
+        val user: RestAppUser = service.getRestAppUser(userId)
+
+        return getMoviesById(user.movies).map { movieDetail ->
+            RestMovieDetail(
+                id = movieDetail.id,
+                mDbId = movieDetail.mDbId,
+                title = movieDetail.title,
+                overview = movieDetail.overview,
+                posterPath = movieDetail.posterPath,
+                backdropPath = movieDetail.backdropPath,
+                directors = movieDetail.directors,
+                popularity = movieDetail.popularity,
+                releaseDate = movieDetail.releaseDate,
+                revenue = movieDetail.revenue,
+                runtime = movieDetail.runtime,
+                tagline = movieDetail.tagline,
+                voteAverage = movieDetail.voteAverage,
+                voteCount = movieDetail.voteCount,
+                isFavourite = movieDetail.isFavourite,
+                reviews = movieDetail.reviews.map { review -> review.id }
+                    .toSet(), //do we want to return ids? Why not return what's required for the screen?
+                actors = movieDetail.actors.map { actor -> actor.id }
+                    .toSet() //do we want to return ids? Why not return what's required for the screen?
+            )
+        }
+    }
+
+    private fun getMoviesById(ids: Set<Int>): List<MovieDetail> = movieDetailRepo.findAllById(ids)
 
     override fun createMovie(restMovieDetail: RestMovieDetail): RestMovie {
         val movie = Movie(
@@ -175,7 +211,8 @@ class MovieServiceImpl(
     override fun updateMovie(movie: Movie): Movie {
         movieRepo.findById(movie.id).let {
             return if (it.isPresent) {
-                movieRepo.save(movie
+                movieRepo.save(
+                    movie
                 )
             } else {
                 throw NoSuchElementException("Could not find a movie with an 'id' of ${movie.id}.")

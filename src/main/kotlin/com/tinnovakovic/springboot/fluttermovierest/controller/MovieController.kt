@@ -27,12 +27,18 @@ class MovieController(private val service: MovieService) {
     @GetMapping("/{id}")
     fun getMovie(@PathVariable id: Int): RestMovieDetail = service.getRestMovie(id)
 
+    // Put this in a separate Controller called FavouriteController?
+    @GetMapping("/user/{id}")
+    fun getFavouriteMovies(@PathVariable id: Int): List<RestMovieDetail> = service.getFavouriteMovies(id)
+
+    @GetMapping()
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     fun createMovie(@RequestBody restMovieDetail: RestMovieDetail): RestMovie = service.createMovie(restMovieDetail)
 
     @PatchMapping("/")
-    fun updateMovie(@RequestBody restMovieDetail: RestMovieDetail): RestMovieDetail = service.updateMovie(restMovieDetail)
+    fun updateMovie(@RequestBody restMovieDetail: RestMovieDetail): RestMovieDetail =
+        service.updateMovie(restMovieDetail)
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

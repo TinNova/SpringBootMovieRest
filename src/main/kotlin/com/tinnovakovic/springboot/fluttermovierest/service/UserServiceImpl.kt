@@ -46,7 +46,7 @@ class UserServiceImpl(
     }
 
     // to return movieIds you need to query the app_user_movie table, but we only want to do this in AppUserDetail
-    private fun getAppUser(id: Int): AppUser {
+    fun getAppUser(id: Int): AppUser {
         userRepo.findById(id).let {
             return if (it.isPresent) {
                 it.get()
