@@ -40,7 +40,8 @@ class UserServiceImpl(
                 id = it.id,
                 username = it.username,
                 email = it.email,
-                movies = it.favMovies.map { it.id }.toMutableSet()
+                movies = it.favMovies.map { it.id }.toSet(),
+                actors = it.favActors.map { it.id }.toSet()
             )
         }
     }

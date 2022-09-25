@@ -3,6 +3,7 @@ package com.tinnovakovic.springboot.fluttermovierest.controller
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.CreateActor
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestActor
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestActorDetail
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovieDetail
 import com.tinnovakovic.springboot.fluttermovierest.service.ActorService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -26,9 +27,14 @@ class ActorController(private val service: ActorService) {
     fun createActor(@RequestBody createActor: CreateActor): RestActor = service.createActor(createActor)
 
     @GetMapping("/{actorId}")
-    fun getActorDetail(@PathVariable actorId: Int): RestActorDetail = service.getRestActorDetail(actorId) // do we want to return RestActor or RestActorDetail?
+    fun getActorDetail(@PathVariable actorId: Int): RestActorDetail =
+        service.getRestActorDetail(actorId) // do we want to return RestActor or RestActorDetail?
 
     @GetMapping("/")
-    fun getActors(@RequestBody actorIds: List<Int>): List<RestActor> = service.getRestActors(actorIds) // do we want to return RestActor or RestActorDetail?
+    fun getActors(@RequestBody actorIds: List<Int>): List<RestActor> =
+        service.getRestActors(actorIds) // do we want to return RestActor or RestActorDetail?
 
+    @GetMapping("/user/{id}")
+    fun getFavouriteActors(@PathVariable id: Int): List<RestActorDetail> =
+        service.getFavouriteActors(id) // do we want to return RestActor or RestActorDetail?
 }

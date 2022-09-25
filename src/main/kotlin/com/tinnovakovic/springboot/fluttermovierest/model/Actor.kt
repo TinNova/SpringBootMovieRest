@@ -22,7 +22,7 @@ data class Actor(
     val biography: String, // GetDetail
     @ManyToMany(mappedBy = "actors")
     val movieDetails: Set<MovieDetail>,
-    @ManyToMany(mappedBy = "favMovies")
+    @ManyToMany(mappedBy = "favActors")
     val appUsers: Set<AppUser>
 //    val images: List<String>, // GetImages
 ) {

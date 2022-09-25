@@ -1,6 +1,7 @@
 package com.tinnovakovic.springboot.fluttermovierest.service
 
 import com.tinnovakovic.springboot.fluttermovierest.model.Actor
+import com.tinnovakovic.springboot.fluttermovierest.model.MovieDetail
 import com.tinnovakovic.springboot.fluttermovierest.repo.ActorRepo
 import com.tinnovakovic.springboot.fluttermovierest.repo.MovieDetailRepo
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.*
@@ -9,7 +10,9 @@ import java.lang.IllegalArgumentException
 
 @Service
 class ActorServiceImpl(
-    private val actorRepo: ActorRepo, private val movieDetailRepo: MovieDetailRepo
+    private val actorRepo: ActorRepo,
+    private val movieDetailRepo: MovieDetailRepo,
+    private val userService: UserService
 ) : ActorService {
 
     override fun createActor(createActor: CreateActor): RestActor {
@@ -107,4 +110,32 @@ class ActorServiceImpl(
     override fun getActors(actorIds: List<Int>): List<Actor> {
         return actorRepo.findAllById(actorIds)
     }
+
+    override fun getFavouriteActors(userId: Int): List<RestActorDetail> {
+        val user: RestAppUser = userService.getRestAppUser(userId)
+
+        return getActorsById(user.actors).map { actor ->
+            RestActorDetail(id = actor.id,
+                actorMdbId = actor.actorMdbId,
+                biography = actor.biography,
+                profilePath = actor.profilePath,
+                images = null, // need to set up images
+                restMovieCredits = actor.movieDetails.map {
+                    RestMovieCredit(
+                        id = it.id,
+                        movieMDbId = it.mDbId,
+                        posterPath = it.posterPath,
+                        directors = emptyList(), // need to implement this?
+                        genres = emptyList(), // look up how genres work in the api
+                        popularity = it.popularity,
+                        releaseDate = it.releaseDate,
+                        revenue = it.revenue,
+                        isFavourite = it.isFavourite
+                    )
+                })
+        }
+    }
+
+    private fun getActorsById(ids: Set<Int>): List<Actor> = actorRepo.findAllById(ids)
+
 }
