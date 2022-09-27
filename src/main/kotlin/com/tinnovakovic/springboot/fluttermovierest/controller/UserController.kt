@@ -1,7 +1,7 @@
 package com.tinnovakovic.springboot.fluttermovierest.controller
 
+import com.tinnovakovic.springboot.fluttermovierest.model.Role
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestAppUser
-import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestSaveActor
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestSaveMovie
 import com.tinnovakovic.springboot.fluttermovierest.service.UserService
@@ -31,22 +31,33 @@ class UserController(private val service: UserService) {
 
     @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    fun saveMovie(@PathVariable userId: Int, @RequestBody restSaveMovie: RestSaveMovie): Boolean =
-        service.saveMovie(userId, restSaveMovie)
+    fun saveMovieToUser(@PathVariable userId: Int, @RequestBody restSaveMovie: RestSaveMovie): Boolean =
+        service.saveMovieToUser(userId, restSaveMovie)
 
     @PatchMapping("/{userId}/saveactor")
     @ResponseStatus(HttpStatus.CREATED)
-    fun saveActor(@PathVariable userId: Int, @RequestBody restSaveActor: RestSaveActor): Boolean =
-        service.saveActor(userId, restSaveActor)
+    fun saveActorToUser(@PathVariable userId: Int, @RequestBody restSaveActor: RestSaveActor): Boolean =
+        service.saveActorToUser(userId, restSaveActor)
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addUser(@RequestBody restAppUser: RestAppUser): RestAppUser = service.createUser(restAppUser)
+    fun saveUser(@RequestBody restAppUser: RestAppUser): RestAppUser = service.saveUser(restAppUser)
 
-//    @PatchMapping("/")
-//    fun updateUser(@RequestBody restAppUser: RestAppUser): RestAppUser = service.updateUser(restAppUser)
+    @PostMapping("/role")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun saveRole(@RequestBody role: Role): Role = service.saveRole(role)
+
+    // Maybe return boolean just so we know if it was successful or not
+    @PostMapping("/user/{id}/role/{roleName}")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun addRoleToUser(@RequestBody form: RoleToUserForm) = service.addRoleToUser(form.userEmail, form.roleName)
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteUser(@PathVariable id: Int): Unit = service.deleteUser(id)
 }
+
+data class RoleToUserForm(
+    val userEmail: String,
+    val roleName: String
+)
