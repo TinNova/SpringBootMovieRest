@@ -5,6 +5,11 @@ import com.tinnovakovic.springboot.fluttermovierest.repo.*
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
@@ -18,9 +23,34 @@ class UserServiceImpl(
     private val movieDetailRepo: MovieDetailRepo,
     private val actorRepo: ActorRepo,
     private val roleRepo: RoleRepo,
-) : UserService {
+    private val passwordEncoder: PasswordEncoder
+) : UserService, UserDetailsService {
 
     val log: Logger = LoggerFactory.getLogger(UserService::class.java)
+
+    override fun loadUserByUsername(email: String?): UserDetails {
+        if (email != null) {
+            val user = userRepo.findByEmail(email)
+            return if (user.isPresent) {
+                getUserDetails(user.get())
+
+            } else {
+                log.error("User not found in the database.")
+                throw UsernameNotFoundException("User not found in the database.")
+            }
+        }
+        throw UsernameNotFoundException("User not found in the database.")
+    }
+
+    private fun getUserDetails(appUser: AppUser): UserDetails {
+        log.info("User found in the database: ${appUser.email}")
+
+        val authorities: List<SimpleGrantedAuthority> = appUser.roles.map {
+            (SimpleGrantedAuthority(it.name))
+        }
+
+        return org.springframework.security.core.userdetails.User(appUser.username, appUser.password, authorities)
+    }
 
     override fun getRestAppUsers(): List<RestAppUser> {
         return getUsers().map {
@@ -28,6 +58,7 @@ class UserServiceImpl(
                 id = it.id,
                 username = it.username,
                 email = it.email,
+                password = it.password,
                 movies = it.favMovies.map { it.id }.toSet(),
                 actors = it.favActors.map { it.id }.toSet(),
                 roles = it.roles.map { RestRole(id = it.id, name = it.name) }.toSet(),
@@ -45,6 +76,7 @@ class UserServiceImpl(
                 id = it.id,
                 username = it.username,
                 email = it.email,
+                password = it.password,
                 movies = it.favMovies.map { it.id }.toSet(),
                 actors = it.favActors.map { it.id }.toSet(),
                 roles = it.roles.map { RestRole(id = it.id, name = it.name) }.toSet(),
@@ -66,9 +98,16 @@ class UserServiceImpl(
     override fun saveUser(restAppUser: RestAppUser): RestAppUser {
         return createUser(
             AppUser(
-                id = -1, username = restAppUser.username, email = restAppUser.email, appUserDetail = AppUserDetail(
+                id = -1,
+                username = restAppUser.username,
+                email = restAppUser.email,
+                password = restAppUser.password,
+                appUserDetail = AppUserDetail(
                     id = -1, username = restAppUser.username, email = restAppUser.email, reviews = emptySet()
-                ), favMovies = emptySet(), favActors = emptySet(), roles = emptySet()
+                ),
+                favMovies = emptySet(),
+                favActors = emptySet(),
+                roles = emptySet()
             )
         ).let {
             restAppUser.copy(id = it.id)
@@ -77,6 +116,7 @@ class UserServiceImpl(
 
     private fun createUser(appUser: AppUser): AppUser {
         return if (userRepo.findByEmail(appUser.email).isEmpty) {
+            appUser.password = passwordEncoder.encode(appUser.password)
             userRepo.save(appUser)
         } else {
             throw IllegalArgumentException("A user with the 'email' ${appUser.email} already exists")

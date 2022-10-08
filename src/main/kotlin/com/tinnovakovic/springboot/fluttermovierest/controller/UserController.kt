@@ -39,7 +39,7 @@ class UserController(private val service: UserService) {
     fun saveActorToUser(@PathVariable userId: Int, @RequestBody restSaveActor: RestSaveActor): Boolean =
         service.saveActorToUser(userId, restSaveActor)
 
-    @PostMapping("/")
+    @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
     fun saveUser(@RequestBody restAppUser: RestAppUser): RestAppUser = service.saveUser(restAppUser)
 
