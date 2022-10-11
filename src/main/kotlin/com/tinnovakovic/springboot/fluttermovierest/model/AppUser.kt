@@ -18,6 +18,8 @@ data class AppUser(
     val username: String,
     @Column(name = "email", nullable = false, columnDefinition = "TEXT")
     val email: String,
+    @Column(name = "password", nullable = false, columnDefinition = "TEXT")
+    var password: String,
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "app_user_detail_id", referencedColumnName = "id")
     val appUserDetail: AppUserDetail,
