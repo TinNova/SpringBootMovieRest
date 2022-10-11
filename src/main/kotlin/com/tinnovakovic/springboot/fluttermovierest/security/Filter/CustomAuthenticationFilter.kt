@@ -1,9 +1,8 @@
-package com.tinnovakovic.springboot.fluttermovierest.security
+package com.tinnovakovic.springboot.fluttermovierest.security.Filter
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.tinnovakovic.springboot.fluttermovierest.service.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -20,13 +19,13 @@ import javax.servlet.http.HttpServletResponse
 import kotlin.collections.HashMap
 import kotlin.streams.toList
 
-class CustomAuthFilter(authenticationManager: AuthenticationManager) : UsernamePasswordAuthenticationFilter() {
+class CustomAuthenticationFilter(authenticationManager: AuthenticationManager) : UsernamePasswordAuthenticationFilter() {
 
     private val log: Logger
 
     init {
         this.authenticationManager = authenticationManager
-        this.log = LoggerFactory.getLogger(CustomAuthFilter::class.java)
+        this.log = LoggerFactory.getLogger(CustomAuthenticationFilter::class.java)
     }
 
     override fun attemptAuthentication(request: HttpServletRequest?, response: HttpServletResponse?): Authentication {

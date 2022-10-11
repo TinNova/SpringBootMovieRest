@@ -28,12 +28,11 @@ class UserServiceImpl(
 
     val log: Logger = LoggerFactory.getLogger(UserService::class.java)
 
-    override fun loadUserByUsername(email: String?): UserDetails {
-        if (email != null) {
-            val user = userRepo.findByEmail(email)
+    override fun loadUserByUsername(username: String?): UserDetails {
+        if (username != null) {
+            val user = userRepo.findByUsername(username)
             return if (user.isPresent) {
                 getUserDetails(user.get())
-
             } else {
                 log.error("User not found in the database.")
                 throw UsernameNotFoundException("User not found in the database.")
@@ -91,6 +90,16 @@ class UserServiceImpl(
                 it.get()
             } else {
                 throw NoSuchElementException("Could not find a user with an id of $id.")
+            }
+        }
+    }
+
+    override fun getAppUser(username: String): AppUser {
+        userRepo.findByUsername(username).let {
+            return if (it.isPresent) {
+                it.get()
+            } else {
+                throw NoSuchElementException("Could not find a user with an id of $username.")
             }
         }
     }
