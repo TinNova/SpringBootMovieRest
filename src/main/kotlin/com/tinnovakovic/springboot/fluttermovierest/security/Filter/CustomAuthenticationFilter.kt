@@ -49,14 +49,14 @@ class CustomAuthenticationFilter(authenticationManager: AuthenticationManager) :
         val algorithm: Algorithm = Algorithm.HMAC256("secret".encodeToByteArray())
         val accessToken = JWT.create()
             .withSubject(user.username)
-            .withExpiresAt(Date(System.currentTimeMillis() + 10 * 60 * 1000)) //10 minutes
+            .withExpiresAt(Date(System.currentTimeMillis() + 100 * 60 * 1000)) //10 minutes
             .withIssuer(request?.requestURL.toString())
             .withClaim("roles", user.authorities.stream().map { it.authority }.toList())
             .sign(algorithm)
 
         val refreshToken = JWT.create()
             .withSubject(user.username)
-            .withExpiresAt(Date(System.currentTimeMillis() + 30 * 60 * 1000)) //30 minutes
+            .withExpiresAt(Date(System.currentTimeMillis() + 300 * 60 * 1000)) //30 minutes
             .withIssuer(request?.requestURL.toString())
             .sign(algorithm)
 

@@ -145,9 +145,22 @@ class UserServiceImpl(
             if (entityMovie.isPresent) {
                 userRepo.findById(userId).let { entityUser ->
                     return if (entityUser.isPresent) {
-                        val userEntityMovies: Set<Movie> = entityUser.get().favMovies.plus(entityMovie.get())
-                        userRepo.save(entityUser.get().copy(favMovies = userEntityMovies))
-                        true
+
+                        val saved: List<Movie> = entityUser.get().favMovies.filter { it.id == movie.id }
+
+                        if (saved.isNotEmpty()) {
+                            // delete movie from user favourites
+                            userRepo.save(
+                                entityUser.get().copy(favMovies = entityUser.get().favMovies.minus(entityMovie.get()))
+                            )
+                            false
+                        } else {
+                            // add movie to user favourites
+                            userRepo.save(
+                                entityUser.get().copy(favMovies = entityUser.get().favMovies.plus(entityMovie.get()))
+                            )
+                            true
+                        }
                     } else {
                         throw NoSuchElementException("Could not find a user with an 'id' of ${userId}.")
                     }
@@ -158,6 +171,7 @@ class UserServiceImpl(
         }
     }
 
+    //TODO Delete an Actor if it's already saved to this user
     override fun saveActorToUser(userId: Int, actor: RestSaveActor): Boolean {
         actorRepo.findById(actor.id).let { entityActor ->
             if (entityActor.isPresent) {

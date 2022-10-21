@@ -85,7 +85,7 @@ class UserController(private val service: UserService) {
 
                 val accessToken = JWT.create()
                     .withSubject(user.username)
-                    .withExpiresAt(Date(System.currentTimeMillis() + 10 * 60 * 1000)) //10 minutes
+                    .withExpiresAt(Date(System.currentTimeMillis() + 100 * 60 * 10000)) //100 minutes
                     .withIssuer(request?.requestURL.toString())
                     .withClaim("roles", user.roles.stream().map { it.name }.toList())
                     .sign(algorithm)
