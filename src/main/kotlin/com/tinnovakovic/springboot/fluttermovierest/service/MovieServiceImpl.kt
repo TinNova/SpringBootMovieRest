@@ -23,7 +23,9 @@ class MovieServiceImpl(
             RestMovie(
                 id = it.id,
                 mDbId = it.mDbId,
-                posterPath = it.posterPath
+                title = it.title,
+                posterPath = it.posterPath,
+                backdropPath = it.backdropPath
             )
         }
     }
@@ -113,7 +115,9 @@ class MovieServiceImpl(
         val movie = Movie(
             id = restMovieDetail.id,
             mDbId = restMovieDetail.mDbId,
+            title = restMovieDetail.title,
             posterPath = restMovieDetail.posterPath,
+            backdropPath = restMovieDetail.backdropPath,
             movieDetail = MovieDetail(
                 id = restMovieDetail.id,
                 mDbId = restMovieDetail.mDbId,
@@ -137,7 +141,7 @@ class MovieServiceImpl(
         )
 
         val savedMovie = createMovie(movie)
-        return RestMovie(id = savedMovie.id, mDbId = savedMovie.mDbId, posterPath = savedMovie.posterPath)
+        return RestMovie(id = savedMovie.id, mDbId = savedMovie.mDbId, title = savedMovie.title, posterPath = savedMovie.posterPath, backdropPath = savedMovie.backdropPath)
     }
 
 
@@ -156,7 +160,9 @@ class MovieServiceImpl(
                     Movie(
                         id = restMovieDetail.id,
                         mDbId = restMovieDetail.mDbId,
+                        title = restMovieDetail.title,
                         posterPath = restMovieDetail.posterPath,
+                        backdropPath = restMovieDetail.backdropPath,
                         movieDetail = MovieDetail(
                             id = restMovieDetail.id,
                             mDbId = restMovieDetail.mDbId,

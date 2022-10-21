@@ -15,8 +15,12 @@ data class Movie(
     val id: Int,
     @Column(name = "mdb_id", nullable = false, columnDefinition = "TEXT")
     val mDbId: String,
+    @Column(name = "title", nullable = false, columnDefinition = "TEXT")
+    val title: String,
     @Column(name = "poster_path", nullable = false, columnDefinition = "TEXT")
     val posterPath: String,
+    @Column(name = "backdrop_path", nullable = false, columnDefinition = "TEXT")
+    val backdropPath: String,
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "movie_detail_id", referencedColumnName = "id")
     var movieDetail: MovieDetail,
@@ -38,8 +42,9 @@ data class Movie(
 
         if (id != other.id) return false
         if (mDbId != other.mDbId) return false
+        if (title != other.title) return false
         if (posterPath != other.posterPath) return false
-        if (movieDetail != other.movieDetail) return false
+        if (backdropPath != other.backdropPath) return false
 
         return true
     }
@@ -47,7 +52,9 @@ data class Movie(
     override fun hashCode(): Int {
         var result = id
         result = 31 * result + mDbId.hashCode()
+        result = 31 * result + title.hashCode()
         result = 31 * result + posterPath.hashCode()
+        result = 31 * result + backdropPath.hashCode()
         result = 31 * result + movieDetail.hashCode()
         return result
     }
