@@ -29,7 +29,7 @@ class MdbMapper {
                 voteCount = it.vote_count,
                 isFavourite = false,
                 reviews = emptySet(),
-                actors = emptySet() //is this the correct thing to do?
+                actors = listOf()
             )
         }
 

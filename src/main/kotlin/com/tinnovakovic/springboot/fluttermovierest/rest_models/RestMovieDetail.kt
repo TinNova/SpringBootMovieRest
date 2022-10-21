@@ -17,5 +17,5 @@ data class RestMovieDetail(
     val voteCount: Int,
     val isFavourite: Boolean,
     val reviews: Set<Int>,
-    val actors: Set<Int>
+    val actors: List<RestActor>
 )

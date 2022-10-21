@@ -4,6 +4,7 @@ import com.tinnovakovic.springboot.fluttermovierest.repo.MovieRepo
 import com.tinnovakovic.springboot.fluttermovierest.model.Movie
 import com.tinnovakovic.springboot.fluttermovierest.model.MovieDetail
 import com.tinnovakovic.springboot.fluttermovierest.repo.MovieDetailRepo
+import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestActor
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestAppUser
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovie
 import com.tinnovakovic.springboot.fluttermovierest.rest_models.RestMovieDetail
@@ -19,7 +20,11 @@ class MovieServiceImpl(
 
     override fun getRestMovies(): List<RestMovie> {
         return getMovies().map {
-            RestMovie(id = it.id, mDbId = it.mDbId, posterPath = it.posterPath)
+            RestMovie(
+                id = it.id,
+                mDbId = it.mDbId,
+                posterPath = it.posterPath
+            )
         }
     }
 
@@ -47,8 +52,14 @@ class MovieServiceImpl(
                 isFavourite = movieDetail.isFavourite,
                 reviews = movieDetail.reviews.map { review -> review.id }
                     .toSet(), //do we want to return ids? Why not return what's required for the screen?
-                actors = movieDetail.actors.map { actor -> actor.id }
-                    .toSet() //do we want to return ids? Why not return what's required for the screen?
+                actors = movieDetail.actors.map { actor ->
+                    RestActor(
+                        actor.id,
+                        actor.actorMdbId,
+                        actor.name,
+                        actor.profilePath
+                    )
+                }
             )
         }
     }
@@ -84,8 +95,14 @@ class MovieServiceImpl(
                 isFavourite = movieDetail.isFavourite,
                 reviews = movieDetail.reviews.map { review -> review.id }
                     .toSet(), //do we want to return ids? Why not return what's required for the screen?
-                actors = movieDetail.actors.map { actor -> actor.id }
-                    .toSet() //do we want to return ids? Why not return what's required for the screen?
+                actors = movieDetail.actors.map { actor ->
+                    RestActor(
+                        actor.id,
+                        actor.actorMdbId,
+                        actor.name,
+                        actor.profilePath
+                    )
+                }
             )
         }
     }

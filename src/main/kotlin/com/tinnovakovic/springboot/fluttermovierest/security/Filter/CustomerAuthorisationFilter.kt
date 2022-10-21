@@ -41,7 +41,7 @@ class CustomerAuthorisationFilter() : OncePerRequestFilter() {
                     val decodeJWT: DecodedJWT = verifier.verify(token)
                     val username = decodeJWT.subject
                     val roles =
-                        decodeJWT.getClaim("roles").asArray(String.Companion::class.java)
+                        decodeJWT.getClaim("roles").asArray(String::class.java)
                     val authorities: MutableCollection<SimpleGrantedAuthority> = mutableListOf()
                     stream(roles).forEach {
                         authorities.add(SimpleGrantedAuthority(it.toString()))
