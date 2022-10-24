@@ -24,8 +24,8 @@ class MovieController(private val service: MovieService) {
     @GetMapping("/")
     fun getMovies(): List<RestMovie> = service.getRestMovies()
 
-    @GetMapping("/{id}")
-    fun getMovie(@PathVariable id: Int): RestMovieDetail = service.getRestMovie(id)
+    @GetMapping("/{id}/user/{userId}")
+    fun getMovie(@PathVariable id: Int, @PathVariable userId: Int): RestMovieDetail = service.getRestMovie(id, userId)
 
     // Put this in a separate Controller called FavouriteController?
     @GetMapping("/user/{id}")

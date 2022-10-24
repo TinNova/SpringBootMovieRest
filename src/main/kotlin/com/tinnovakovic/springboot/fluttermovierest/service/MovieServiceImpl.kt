@@ -34,8 +34,13 @@ class MovieServiceImpl(
         return movieRepo.findAll()
     }
 
-    override fun getRestMovie(id: Int): RestMovieDetail {
-        return getMovie(id).let { movieDetail ->
+    override fun getRestMovie(id: Int, userId: Int): RestMovieDetail {
+        val user = getUser(userId)
+        val movieDetail = getMovie(id)
+        val favouriteIds: List<Int> = user.movies.filter { favouriteMovieId ->
+            favouriteMovieId == id
+        }
+        return movieDetail.let { movieDetail ->
             RestMovieDetail(
                 id = movieDetail.id,
                 mDbId = movieDetail.mDbId,
@@ -51,7 +56,7 @@ class MovieServiceImpl(
                 tagline = movieDetail.tagline,
                 voteAverage = movieDetail.voteAverage,
                 voteCount = movieDetail.voteCount,
-                isFavourite = movieDetail.isFavourite,
+                isFavourite = favouriteIds.isNotEmpty(), // if list empty return false //TODO this introduced a bug
                 reviews = movieDetail.reviews.map { review -> review.id }
                     .toSet(), //do we want to return ids? Why not return what's required for the screen?
                 actors = movieDetail.actors.map { actor ->
@@ -71,6 +76,10 @@ class MovieServiceImpl(
             return if (it.isPresent) it.get()
             else throw NoSuchElementException("Could not find a movie with an 'id' of $id.")
         }
+    }
+
+    private fun getUser(userId: Int): RestAppUser {
+        return userService.getRestAppUser(userId)
     }
 
     //this should be in a helper class instead of in the ServiceImpl
@@ -141,7 +150,13 @@ class MovieServiceImpl(
         )
 
         val savedMovie = createMovie(movie)
-        return RestMovie(id = savedMovie.id, mDbId = savedMovie.mDbId, title = savedMovie.title, posterPath = savedMovie.posterPath, backdropPath = savedMovie.backdropPath)
+        return RestMovie(
+            id = savedMovie.id,
+            mDbId = savedMovie.mDbId,
+            title = savedMovie.title,
+            posterPath = savedMovie.posterPath,
+            backdropPath = savedMovie.backdropPath
+        )
     }
 
 

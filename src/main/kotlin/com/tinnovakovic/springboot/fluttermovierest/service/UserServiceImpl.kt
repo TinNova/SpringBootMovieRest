@@ -140,7 +140,7 @@ class UserServiceImpl(
         }
     }
 
-    override fun saveMovieToUser(userId: Int, movie: RestSaveMovie): Boolean {
+    override fun saveMovieToUser(userId: Int, movie: RestSaveMovie): RestSaveMovieResult {
         movieRepo.findById(movie.id).let { entityMovie ->
             if (entityMovie.isPresent) {
                 userRepo.findById(userId).let { entityUser ->
@@ -153,13 +153,13 @@ class UserServiceImpl(
                             userRepo.save(
                                 entityUser.get().copy(favMovies = entityUser.get().favMovies.minus(entityMovie.get()))
                             )
-                            false
+                            RestSaveMovieResult(saved = DELETED)
                         } else {
                             // add movie to user favourites
                             userRepo.save(
                                 entityUser.get().copy(favMovies = entityUser.get().favMovies.plus(entityMovie.get()))
                             )
-                            true
+                            RestSaveMovieResult(saved = SAVED)
                         }
                     } else {
                         throw NoSuchElementException("Could not find a user with an 'id' of ${userId}.")
@@ -207,3 +207,6 @@ class UserServiceImpl(
 
     }
 }
+
+const val SAVED = "saved"
+const val DELETED = "deleted"

@@ -10,7 +10,7 @@ interface MovieService {
     fun getRestMovies(): List<RestMovie>
     fun getMovies(): List<Movie>
     fun getFavouriteMovies(userId: Int): List<RestMovieDetail>
-    fun getRestMovie(id: Int): RestMovieDetail
+    fun getRestMovie(id: Int, userId: Int): RestMovieDetail
     fun createMovie(restMovieDetail: RestMovieDetail): RestMovie
     fun bulkSaveMovies(restMovieDetails: List<RestMovieDetail>)
     fun updateMovie(restMovieDetail: RestMovieDetail): RestMovieDetail
