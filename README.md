@@ -21,7 +21,7 @@ The services handle the business logic for the app they are also the access poin
 #### Repos
 The repos directly interact with PostGres to save, delete and edit data.
 
-<img src="https://github.com/TinNova/SpringBootMovieRest/blob/master/BulkDownload%20UML.png" width="500" align="right" hspace="20">
+<img src="https://github.com/TinNova/SpringBootMovieRest/blob/master/BulkDownload%20UML.png" width="500" align="right" hspace="20" title="Image description"/>
 
 ## App Functionality
 ### Bulk Download
@@ -36,12 +36,12 @@ To initially populate SQL with data a bulk download method has to be called, thi
 4. the app assigns Actors to the Movies saved in SQL.
 
 This is complex, therefore see the Sequence Diagram as a visual explanation.
-
+<img src="https://github.com/TinNova/SpringBootMovieRest/blob/master/SaveMovie%20UML.png" width="500" align="right" hspace="20">
 ### Get Data
 The app provides api's to access Movies and Actors from SQL
 
-### Authorisation, Create An Account
-The app uses the security:spring-security-test library to enable authorisation, allowing for the creation of Users and the ability for client to provide bespoke data to their users.
+### Authorisation / Create An Account
+The app uses the security:spring-security-test library to enable authorisation, allowing for the creation of Users and the ability to provide bespoke data per user.
 
 Some functionalities that are available:
 - Reviewing movies
@@ -51,7 +51,7 @@ Some functionalities that are available:
 -- A movie can be associated with a user, only that user can see movies associated with them, only they can delete a saved movie.
 
 ### Authentication
-Token authentication is enable.
+Token authentication is enabled.
 
 ## How To Setup Project
 
