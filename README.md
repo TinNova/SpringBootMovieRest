@@ -1,5 +1,30 @@
 # SpringBootMovieRest
 
+
+### App Functionality
+This SpringBoot REST app queries the "TheMovieDB" API, it saves the results in PostGres and provides an API for a client side application to access the data. It is in essence replicating the "TheMovieDB" API.
+
+#### Why Does This App Exist
+It was an exercise to learn fullStack development, I built this app alongside my Flutter App which depends on it.
+Flutter App: https://github.com/TinNova/flutter_movies
+  
+
+## The App Architecture
+I followed the standard architecture pattern for Spring Rest applications however I did use interfaces even though they aren't required for such a small app.
+
+#### Controllers
+The controllers define the api's that are available and what information a client can get. If it's not in the controller then it cannot be accessed.
+
+#### Services
+The services handle the business logic for the app they are also the access point to PostGres.
+
+#### Repos
+The repos directly interact with PostGres to save, delete and edit data.
+
+## App Functionality
+To initially populate SQL with data a bulk download method has to be called
+
+
 ## How To Setup Project
 
 ### Install Postgresql
